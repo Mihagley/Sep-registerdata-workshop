@@ -1,1 +1,562 @@
-PLACEHOLDER
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Workshop – Registerdataanalys</title>
+  <meta name="description" content="Tre gruppuppgifter om registerdataanalys baserade på rapporter från Myndigheten för vård- och omsorgsanalys.">
+  <style>
+    :root{
+      --ink:#17212b; --muted:#5e6974; --paper:#fff; --wash:#f4f6f7; --line:#dfe5e8;
+      --blue:#176c78; --blue-dark:#0d4c55; --green:#23824b; --green-dark:#145b34;
+      --purple:#7354a5; --purple-dark:#50347c; --warm:#fff8e9; --warm-line:#ecd59c;
+      --shadow:0 9px 28px rgba(20,40,55,.055);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;background:var(--wash);color:var(--ink);
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      line-height:1.58;
+    }
+    a{color:inherit}
+    button,input{font:inherit}
+    .top{
+      background:#18252e;color:#fff;padding:18px 20px;
+    }
+    .top-inner{max-width:980px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:18px}
+    .brand{font-weight:800;letter-spacing:.01em}
+    .tag{font-size:.82rem;opacity:.75}
+    .hero{
+      max-width:980px;margin:0 auto;padding:60px 20px 34px;
+    }
+    .eyebrow{text-transform:uppercase;letter-spacing:.13em;font-size:.77rem;font-weight:800;color:#68757e;margin:0 0 10px}
+    h1{font-size:clamp(2.35rem,6vw,4.4rem);line-height:1.02;margin:0 0 18px;letter-spacing:-.035em}
+    .lead{font-size:1.18rem;color:#53606b;max-width:760px;margin:0}
+    .wrap{max-width:980px;margin:0 auto;padding:0 20px 70px}
+    .chooser{
+      display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:24px 0 28px;
+    }
+    .choice{
+      background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:23px;
+      text-decoration:none;box-shadow:var(--shadow);transition:.15s transform,.15s box-shadow;
+      min-height:214px;display:flex;flex-direction:column;
+    }
+    .choice:hover{transform:translateY(-2px);box-shadow:0 13px 34px rgba(20,40,55,.09)}
+    .choice-num{font-weight:850;font-size:.77rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:26px}
+    .choice h2{font-size:1.35rem;line-height:1.18;margin:0 0 9px}
+    .choice p{color:var(--muted);margin:0 0 16px;font-size:.95rem}
+    .choice .go{margin-top:auto;font-weight:750}
+    .c1{border-top:5px solid var(--blue)} .c1 .choice-num,.c1 .go{color:var(--blue-dark)}
+    .c2{border-top:5px solid var(--green)} .c2 .choice-num,.c2 .go{color:var(--green-dark)}
+    .c3{border-top:5px solid var(--purple)} .c3 .choice-num,.c3 .go{color:var(--purple-dark)}
+    .teacher{
+      background:#fff;border:1px solid var(--line);border-radius:18px;padding:26px;margin-top:28px;box-shadow:var(--shadow)
+    }
+    .teacher h2{margin:0 0 7px;font-size:1.35rem}
+    .teacher-intro{color:var(--muted);margin:0 0 18px}
+    .url-row{display:flex;gap:10px;margin:12px 0 22px}
+    .url-row input{flex:1;min-width:0;border:1px solid #cfd8dd;border-radius:10px;padding:11px 12px}
+    .btn{border:0;border-radius:10px;background:#1c2932;color:white;padding:11px 15px;font-weight:750;cursor:pointer}
+    .qr-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .qr-card{border:1px solid var(--line);border-radius:14px;padding:18px;text-align:center;background:#fbfcfc}
+    .qr-card h3{font-size:1rem;margin:0 0 5px}
+    .qr-card p{font-size:.83rem;color:var(--muted);margin:0 0 12px}
+    .qr-box{width:164px;height:164px;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;background:white;border-radius:8px}
+    .copy-btn{border:1px solid #cfd8dd;background:white;border-radius:8px;padding:8px 10px;cursor:pointer;font-size:.85rem;font-weight:700}
+    .assignment{display:none}
+    .assignment.active{display:block}
+    .assignment-hero{
+      border-radius:22px;padding:39px 34px;color:white;margin:24px 0 22px;position:relative;overflow:hidden;
+    }
+    .assignment-hero:after{
+      content:"";position:absolute;width:230px;height:230px;border-radius:50%;right:-70px;top:-95px;border:42px solid rgba(255,255,255,.08)
+    }
+    .a1 .assignment-hero{background:linear-gradient(135deg,#0d4d55,#187a86)}
+    .a2 .assignment-hero{background:linear-gradient(135deg,#155f36,#2c9859)}
+    .a3 .assignment-hero{background:linear-gradient(135deg,#50337b,#8667b3)}
+    .assignment-hero .eyebrow{color:white;opacity:.75}
+    .assignment-hero h1{font-size:clamp(2rem,5vw,3.5rem);margin-bottom:10px;max-width:780px}
+    .assignment-hero p{font-size:1.08rem;max-width:760px;margin:0;opacity:.93}
+    .card{
+      background:#fff;border:1px solid var(--line);border-radius:16px;padding:26px;margin:0 0 20px;box-shadow:var(--shadow)
+    }
+    .card h2{font-size:1.43rem;margin:0 0 11px}
+    .card p{margin:7px 0 11px}
+    .pill{display:inline-block;font-size:.75rem;text-transform:uppercase;letter-spacing:.075em;font-weight:850;border-radius:999px;padding:4px 9px;margin:0 0 9px}
+    .a1 .pill{background:#e5f1f2;color:var(--blue-dark)}
+    .a2 .pill{background:#e6f3ea;color:var(--green-dark)}
+    .a3 .pill{background:#eee9f6;color:var(--purple-dark)}
+    .source{border-left:4px solid}
+    .a1 .source{border-left-color:var(--blue)}
+    .a2 .source{border-left-color:var(--green)}
+    .a3 .source{border-left-color:var(--purple)}
+    .source a{font-weight:750}
+    .tiny{font-size:.88rem;color:var(--muted)}
+    .task{font-size:1.06rem}
+    .task .big{font-size:1.18rem}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 24px;margin-top:18px}
+    .q{border-top:1px solid var(--line);padding-top:12px}
+    .q h3{font-size:1.02rem;margin:0 0 4px}
+    .q span{font-size:.93rem;color:var(--muted)}
+    .deliverable{background:var(--warm);border-color:var(--warm-line)}
+    details{border:1px solid #dae3e6;border-radius:12px;margin:11px 0;overflow:hidden;background:#fafcfc}
+    summary{cursor:pointer;list-style:none;padding:16px 46px 16px 18px;font-weight:780;position:relative}
+    summary::-webkit-details-marker{display:none}
+    summary:after{content:"+";position:absolute;right:18px;top:11px;font-size:1.35rem;font-weight:450}
+    details[open] summary{border-bottom:1px solid #dae3e6}
+    details[open] summary:after{content:"–"}
+    .hint{padding:14px 18px 17px}
+    .hint p:first-child{margin-top:0}.hint p:last-child{margin-bottom:0}
+    .bonus{border:1px dashed #b9c5c9;background:#fbfcfc}
+    .back-row{display:flex;justify-content:space-between;align-items:center;margin:16px 0 12px}
+    .back{border:0;background:none;padding:0;color:#566570;text-decoration:underline;cursor:pointer;font-weight:700}
+    .number-badge{font-size:.8rem;color:#6b7881}
+    footer{max-width:980px;margin:0 auto;padding:0 20px 34px;color:#74808a;font-size:.83rem}
+    .hidden{display:none!important}
+    @media(max-width:780px){
+      .chooser,.qr-grid,.grid{grid-template-columns:1fr}
+      .choice{min-height:auto}
+      .url-row{flex-direction:column}
+      .assignment-hero{padding:30px 22px}
+      .card{padding:21px}
+      .hero{padding-top:44px}
+      .top-inner{align-items:flex-start;flex-direction:column;gap:3px}
+    }
+    @media print{
+      body{background:#fff}
+      .top,.teacher,.back-row{display:none!important}
+      .assignment.active{display:block}
+      .assignment-hero{color:#000;background:#fff!important;padding:10px 0;border-bottom:2px solid #000;border-radius:0}
+      .assignment-hero .eyebrow{color:#555}
+      .card{box-shadow:none;break-inside:avoid}
+    }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="top-inner">
+      <div class="brand">Workshop: registerdataanalys</div>
+      <div class="tag">Myndigheten för vård- och omsorgsanalys</div>
+    </div>
+  </header>
+
+  <section id="landing">
+    <div class="hero">
+      <p class="eyebrow">Gruppövning</p>
+      <h1>Tre analysproblem.<br>Tre registerstudier.</h1>
+      <p class="lead">
+        Varje grupp arbetar med en tidigare rapport och tar fram ett förslag på hur frågan
+        skulle kunna analyseras med registerdata.
+      </p>
+    </div>
+
+    <main class="wrap">
+      <div class="chooser">
+        <a class="choice c1" href="?uppgift=missbruk">
+          <div class="choice-num">Uppgift 1</div>
+          <h2>Missar vi målen med missbruks- och beroendevården?</h2>
+          <p>Hur följer vi den samlade livssituationen efter kontakt med vården?</p>
+          <div class="go">Öppna uppgiften →</div>
+        </a>
+        <a class="choice c2" href="?uppgift=forlossning">
+          <div class="choice-num">Uppgift 2</div>
+          <h2>I tid och otid</h2>
+          <p>Kan hög belastning i förlossningsvården kopplas till processer och patientutfall?</p>
+          <div class="go">Öppna uppgiften →</div>
+        </a>
+        <a class="choice c3" href="?uppgift=overgang">
+          <div class="choice-num">Uppgift 3</div>
+          <h2>Förberedd och sedd</h2>
+          <p>Vad händer när unga med långvariga tillstånd går från barn- till vuxensjukvård?</p>
+          <div class="go">Öppna uppgiften →</div>
+        </a>
+      </div>
+
+      <section class="teacher">
+        <p class="eyebrow">För workshopledaren</p>
+        <h2>QR-koder till respektive uppgift</h2>
+        <p class="teacher-intro">
+          Publicera sidan på GitHub Pages och skriv in sidans webbadress nedan. QR-koderna
+          leder till samma sida, men öppnar direkt rätt gruppuppgift.
+        </p>
+        <div class="url-row">
+          <input id="baseUrl" aria-label="Sidans publicerade webbadress" placeholder="https://dittnamn.github.io/registerdata-workshop/">
+          <button class="btn" onclick="makeQRCodes()">Skapa QR-koder</button>
+        </div>
+        <div class="qr-grid">
+          <div class="qr-card">
+            <h3>Uppgift 1</h3>
+            <p>Missbruks- och beroendevården</p>
+            <div class="qr-box" id="qr1"></div>
+            <button class="copy-btn" onclick="copyAssignment('missbruk', this)">Kopiera direktlänk</button>
+          </div>
+          <div class="qr-card">
+            <h3>Uppgift 2</h3>
+            <p>Förlossningsvården</p>
+            <div class="qr-box" id="qr2"></div>
+            <button class="copy-btn" onclick="copyAssignment('forlossning', this)">Kopiera direktlänk</button>
+          </div>
+          <div class="qr-card">
+            <h3>Uppgift 3</h3>
+            <p>Barn- till vuxensjukvård</p>
+            <div class="qr-box" id="qr3"></div>
+            <button class="copy-btn" onclick="copyAssignment('overgang', this)">Kopiera direktlänk</button>
+          </div>
+        </div>
+        <p class="tiny" style="margin-top:16px">
+          Tips: spara eller skärmdumpa QR-koderna efter att du angett den slutliga GitHub Pages-adressen.
+        </p>
+      </section>
+    </main>
+  </section>
+
+  <!-- UPPGIFT 1 -->
+  <section id="missbruk" class="assignment a1">
+    <div class="wrap">
+      <div class="back-row">
+        <button class="back" onclick="showLanding()">← Till startsidan</button>
+        <span class="number-badge">Uppgift 1 av 3</span>
+      </div>
+      <header class="assignment-hero">
+        <p class="eyebrow">Gruppuppgift · Registerdataanalys</p>
+        <h1>Missar vi målen med missbruks- och beroendevården?</h1>
+        <p>Bygg en registerbaserad analys av hur det går för personer efter kontakt med missbruks- och beroendevården.</p>
+      </header>
+
+      <section class="card source">
+        <span class="pill">Utgångspunkt</span>
+        <h2>Rapporten</h2>
+        <p>
+          Rapporten lyfter att resultat som är viktiga för personer med missbruk och beroende
+          handlar om mer än själva vården – bland annat hälsa, försörjning, arbete,
+          boendesituation och kriminalitet.
+        </p>
+        <p class="tiny"><a target="_blank" rel="noopener" href="https://www.vardanalys.se/rapporter/missar-vi-malen-med-missbruks-och-beroendevarden/">Läs rapportens sida hos Vård- och omsorgsanalys</a> · Rapport 2016:2</p>
+      </section>
+
+      <section class="card task">
+        <span class="pill">Ert uppdrag</span>
+        <h2>Hur skulle ni göra analysen med registerdata?</h2>
+        <p><strong class="big">Ni får i uppdrag att göra en nationell registerbaserad analys av hur det går för personer som kommer i kontakt med missbruks- och beroendevården.</strong></p>
+        <p>Utforma ett genomförbart analysupplägg. Det viktiga är hur ni tänker – inte att ni kan alla register utantill.</p>
+        <div class="grid">
+          <div class="q"><h3>1. Population</h3><span>Vilka personer ska ingå och hur identifierar ni dem?</span></div>
+          <div class="q"><h3>2. Startpunkt</h3><span>När börjar uppföljningen för individen?</span></div>
+          <div class="q"><h3>3. Utfall</h3><span>Vilka 3–5 resultat vill ni mäta?</span></div>
+          <div class="q"><h3>4. Data</h3><span>Vilka register eller datakällor skulle behövas?</span></div>
+          <div class="q"><h3>5. Jämförelse</h3><span>Vad jämför ni med – över tid, mellan grupper eller både och?</span></div>
+          <div class="q"><h3>6. Tolkning</h3><span>Vad kan analysen säga – och vad kan den inte säga?</span></div>
+        </div>
+      </section>
+
+      <section class="card deliverable">
+        <span class="pill">Redovisning</span>
+        <h2>Förbered en 3-minuters presentation</h2>
+        <p><strong>Population → Startpunkt → Utfall → Data → Jämförelse → Viktigaste begränsning</strong></p>
+      </section>
+
+      <section class="card">
+        <span class="pill">Ledtrådar</span>
+        <h2>Fastnat?</h2>
+        <p>Öppna en ledtråd i taget.</p>
+        <details><summary>Ledtråd 1 – Vilka är egentligen populationen?</summary><div class="hint">
+          <p>Vad betyder “personer i missbruks- och beroendevården” i data?</p>
+          <p>Ska ni identifiera personer genom diagnos, vårdkontakt, läkemedel, socialtjänstinsats – eller någon kombination? <strong>Vilka personer missar ert val?</strong></p>
+        </div></details>
+        <details><summary>Ledtråd 2 – Rapporten kan hjälpa er välja utfall</summary><div class="hint">
+          <p>Tänk bredare än vårdkonsumtion: fysisk och psykisk hälsa, försörjning, arbete, boende, kriminalitet och överlevnad.</p>
+          <p><strong>Vilka av dessa kan operationaliseras med registerdata?</strong></p>
+        </div></details>
+        <details><summary>Ledtråd 3 – Rita en tidslinje</summary><div class="hint">
+          <p>Anta att ni kan identifiera en relevant första vårdkontakt vid tidpunkt <strong>t</strong>.</p>
+          <p><strong>t−3 → t−2 → t−1 → kontakt → t+1 → t+2 → t+3</strong></p>
+          <p>Vilka uppgifter vill ni ha före respektive efter kontakten?</p>
+        </div></details>
+        <details><summary>Ledtråd 4 – Vad betyder “det går bättre”?</summary><div class="hint">
+          <p>Om sysselsättningen ökar efter vårdkontakten – har vården orsakat förbättringen?</p>
+          <p>Skilj mellan <strong>resultatuppföljning</strong> och <strong>effektutvärdering</strong>.</p>
+        </div></details>
+        <details><summary>Ledtråd 5 – Om ni vill närma er en effekt</summary><div class="hint">
+          <p>Finns variation mellan regioner, över tid, i behandling, tillgång till insatser eller genom någon policyförändring som kan ge en bättre jämförelse?</p>
+        </div></details>
+      </section>
+
+      <section class="card bonus">
+        <span class="pill">Bonus</span>
+        <h2>Vad fångar registren inte?</h2>
+        <p>Vilka viktiga resultat ur patientens eller brukarens perspektiv skulle fortfarande vara svåra att mäta med administrativa register?</p>
+      </section>
+    </div>
+  </section>
+
+  <!-- UPPGIFT 2 -->
+  <section id="forlossning" class="assignment a2">
+    <div class="wrap">
+      <div class="back-row">
+        <button class="back" onclick="showLanding()">← Till startsidan</button>
+        <span class="number-badge">Uppgift 2 av 3</span>
+      </div>
+      <header class="assignment-hero">
+        <p class="eyebrow">Gruppuppgift · Registerdataanalys</p>
+        <h1>I tid och otid</h1>
+        <p>Kan registerdata hjälpa oss förstå när förlossningsvårdens kapacitet pressas – och om det påverkar patienterna?</p>
+      </header>
+
+      <section class="card source">
+        <span class="pill">Utgångspunkt</span>
+        <h2>Rapporten</h2>
+        <p>
+          Rapporten studerade bemanning och produktivitet inom förlossningsvården,
+          bland annat genom tio förlossningskliniker, schemadata och intervjuer.
+          Vården behöver ha kapacitet dygnet runt trots att patientinflödet varierar.
+        </p>
+        <p class="tiny"><a target="_blank" rel="noopener" href="https://www.vardanalys.se/rapporter/i-tid-och-otid/">Läs rapportens sida hos Vård- och omsorgsanalys</a> · Rapport 2023:5</p>
+      </section>
+
+      <section class="card task">
+        <span class="pill">Ert uppdrag</span>
+        <h2>Bygg en nationell registerbaserad studie</h2>
+        <p><strong class="big">Ni vill undersöka om hög belastning på en förlossningsklinik påverkar vårdens processer eller utfall för den födande och barnet.</strong></p>
+        <p>Tänk er att ni kan följa samtliga förlossningar i Sverige över flera år. Hur skulle ni utforma analysen?</p>
+        <div class="grid">
+          <div class="q"><h3>1. Population</h3><span>Vilka förlossningar och kliniker ska ingå?</span></div>
+          <div class="q"><h3>2. Exponering</h3><span>Hur mäter ni att en klinik är “hårt belastad”?</span></div>
+          <div class="q"><h3>3. Utfall</h3><span>Vilka process- eller hälsoutfall är relevanta?</span></div>
+          <div class="q"><h3>4. Data</h3><span>Vilka register och andra datakällor behöver ni?</span></div>
+          <div class="q"><h3>5. Jämförelse</h3><span>Vilka födslar är en rimlig jämförelse för en födsel under hög belastning?</span></div>
+          <div class="q"><h3>6. Tolkning</h3><span>Vilka alternativa förklaringar måste ni hantera?</span></div>
+        </div>
+      </section>
+
+      <section class="card deliverable">
+        <span class="pill">Redovisning</span>
+        <h2>Förbered en 3-minuters presentation</h2>
+        <p><strong>Population → Belastningsmått → Utfall → Data → Jämförelse → Viktigaste biasrisken</strong></p>
+      </section>
+
+      <section class="card">
+        <span class="pill">Ledtrådar</span>
+        <h2>Fastnat?</h2>
+        <p>Öppna en ledtråd i taget.</p>
+        <details><summary>Ledtråd 1 – Börja inte med bemanningen</summary><div class="hint">
+          <p>Det är inte säkert att ett nationellt register visar exakt hur många barnmorskor som arbetade en viss timme. Kan ni skapa ett mått på <strong>arbetsbelastning från patientinflödet</strong>?</p>
+        </div></details>
+        <details><summary>Ledtråd 2 – Alla förlossningar har en tid och en plats</summary><div class="hint">
+          <p>Kan belastning beskrivas som antalet samtidiga eller nyligen inträffade förlossningar på samma klinik – relativt vad som är normalt för just den kliniken?</p>
+          <p>Fundera på tidsfönstret: timme, arbetspass, 6 timmar eller dygn.</p>
+        </div></details>
+        <details><summary>Ledtråd 3 – Vad ska påverkas?</summary><div class="hint">
+          <p>Skilj mellan <strong>processmått</strong> och <strong>hälsoutfall</strong>. Exempel kan vara interventioner respektive komplikationer hos den födande eller barnet.</p>
+        </div></details>
+        <details><summary>Ledtråd 4 – Jämför kliniken med sig själv</summary><div class="hint">
+          <p>En stor och en liten klinik har olika normal belastning. Jämför därför gärna <strong>ovanligt belastade</strong> och <strong>normalt belastade</strong> perioder inom samma klinik.</p>
+          <p>Vad behöver ni göra med år, säsong, veckodag och tid på dygnet?</p>
+        </div></details>
+        <details><summary>Ledtråd 5 – Hög belastning är inte slumpmässig</summary><div class="hint">
+          <p>Planerade kejsarsnitt och induktioner kan påverka både tidpunkt och patientmix. Hur hanterar ni planerad vård och andra riskfaktorer?</p>
+          <p><strong>Bör en del av analysen begränsas till förlossningar där tidpunkten är svårare att styra?</strong></p>
+        </div></details>
+        <details><summary>Ledtråd 6 – Ett möjligt upplägg</summary><div class="hint">
+          <p>Skapa ett klinik- och tidspecifikt belastningsmått, standardiserat mot klinikens normala nivå. Relatera det sedan till individutfall inom klinik med kontroll för tid och observerbar riskprofil.</p>
+          <p>Räcker det för kausal tolkning, eller beskriver ni främst ett samband?</p>
+        </div></details>
+      </section>
+
+      <section class="card bonus">
+        <span class="pill">Bonus</span>
+        <h2>Om ni också får schemadata</h2>
+        <p>Hur skulle ni kombinera <strong>antal patienter</strong> och <strong>antal personal i tjänst</strong> till ett bättre mått på belastning? Hur påverkar kompetensmixen måttet?</p>
+      </section>
+    </div>
+  </section>
+
+  <!-- UPPGIFT 3 -->
+  <section id="overgang" class="assignment a3">
+    <div class="wrap">
+      <div class="back-row">
+        <button class="back" onclick="showLanding()">← Till startsidan</button>
+        <span class="number-badge">Uppgift 3 av 3</span>
+      </div>
+      <header class="assignment-hero">
+        <p class="eyebrow">Gruppuppgift · Registerdataanalys</p>
+        <h1>Förberedd och sedd</h1>
+        <p>Studera vad som händer när unga med långvariga sjukdomar och tillstånd går från barn- till vuxensjukvård.</p>
+      </header>
+
+      <section class="card source">
+        <span class="pill">Utgångspunkt</span>
+        <h2>Rapporten</h2>
+        <p>
+          Rapporten handlar om övergången från barn- till vuxensjukvård för unga med
+          långvariga sjukdomar och tillstånd. Brister i övergången kan innebära exempelvis
+          avbrott i vården, ökat nyttjande av akut sjukvård och försämrad hälsa.
+          Rapporten pekar också på svaga förutsättningar för nationell uppföljning.
+        </p>
+        <p class="tiny"><a target="_blank" rel="noopener" href="https://www.vardanalys.se/rapporter/forberedd-och-sedd/">Läs rapportens sida hos Vård- och omsorgsanalys</a> · Rapport 2019:6</p>
+      </section>
+
+      <section class="card task">
+        <span class="pill">Ert uppdrag</span>
+        <h2>Kan vi hitta dem som “faller mellan stolarna”?</h2>
+        <p><strong class="big">Ni får i uppdrag att göra en nationell registerbaserad studie av övergången från barn- till vuxensjukvård för unga med långvariga sjukdomar eller tillstånd.</strong></p>
+        <p>Utforma en analys som kan visa hur kontinuiteten och vårdens utfall förändras i samband med övergången.</p>
+        <div class="grid">
+          <div class="q"><h3>1. Population</h3><span>Vilka unga ska ingå – och hur visar ni att de har ett långvarigt vårdbehov?</span></div>
+          <div class="q"><h3>2. Övergång</h3><span>Hur identifierar ni när barnsjukvården faktiskt övergår till vuxensjukvård?</span></div>
+          <div class="q"><h3>3. Utfall</h3><span>Vad skulle tyda på en fungerande respektive problematisk övergång?</span></div>
+          <div class="q"><h3>4. Data</h3><span>Vilka register behövs för vårdkontakter, läkemedel och hälsoutfall?</span></div>
+          <div class="q"><h3>5. Jämförelse</h3><span>Jämför ni före/efter, diagnoser, regioner, kohorter – eller något annat?</span></div>
+          <div class="q"><h3>6. Tolkning</h3><span>Hur skiljer ni en övergångseffekt från det som normalt händer när patienter blir äldre?</span></div>
+        </div>
+      </section>
+
+      <section class="card deliverable">
+        <span class="pill">Redovisning</span>
+        <h2>Förbered en 3-minuters presentation</h2>
+        <p><strong>Population → Definition av övergång → Utfall → Data → Jämförelse → Viktigaste begränsning</strong></p>
+      </section>
+
+      <section class="card">
+        <span class="pill">Ledtrådar</span>
+        <h2>Fastnat?</h2>
+        <p>Öppna en ledtråd i taget.</p>
+
+        <details><summary>Ledtråd 1 – Börja med en grupp som behöver kontinuerlig vård</summary><div class="hint">
+          <p>Om en ung person normalt bara har sporadiska vårdkontakter är ett “glapp” svårt att tolka.</p>
+          <p>Kan ni välja en eller flera diagnoser där regelbunden uppföljning förväntas, eller definiera återkommande specialistvård under flera år före övergången?</p>
+        </div></details>
+
+        <details><summary>Ledtråd 2 – Är 18-årsdagen verkligen övergången?</summary><div class="hint">
+          <p>Ålder 18 kan vara en administrativ gräns, men själva överföringen kan ske före eller efter.</p>
+          <p>Kan ni observera <strong>sista kontakten med barnspecialistvård</strong> och <strong>första kontakten med relevant vuxenspecialistvård</strong>?</p>
+          <p>Vad gör ni med patienter som aldrig dyker upp i vuxenvården?</p>
+        </div></details>
+
+        <details><summary>Ledtråd 3 – Gör “kontinuitet” mätbar</summary><div class="hint">
+          <p>Exempel på registerbaserade mått:</p>
+          <p><strong>tid till första vuxenvårdsbesök · längsta glapp mellan kontakter · utebliven uppföljning · kontinuitet i läkemedelsuttag</strong></p>
+          <p>Vilket mått svarar bäst på er fråga?</p>
+        </div></details>
+
+        <details><summary>Ledtråd 4 – Lägg till konsekvenser</summary><div class="hint">
+          <p>Om övergången fungerar dåligt, vilka konsekvenser skulle kunna synas i data?</p>
+          <p>Fundera på akutbesök, slutenvård, diagnosspecifika komplikationer, läkemedelsavbrott eller andra relevanta hälsoutfall.</p>
+        </div></details>
+
+        <details><summary>Ledtråd 5 – Rita ett event study</summary><div class="hint">
+          <p>Följ samma personer exempelvis från 15 till 23 års ålder och plotta utfallen relativt övergångstidpunkten.</p>
+          <p><strong>Vad händer åren före, under och efter övergången?</strong></p>
+          <p>Men kom ihåg: en förändring vid denna ålder behöver inte orsakas av själva övergången.</p>
+        </div></details>
+
+        <details><summary>Ledtråd 6 – För att säga något om effekten behövs mer</summary><div class="hint">
+          <p>Om olika regioner, kliniker eller diagnosgrupper använder strukturerade övergångsprogram vid olika tidpunkter kan sådan variation ge en jämförelse.</p>
+          <p>Vilka extra data skulle behövas för att veta <strong>vem som faktiskt exponerades för ett övergångsprogram</strong>?</p>
+        </div></details>
+      </section>
+
+      <section class="card bonus">
+        <span class="pill">Bonus</span>
+        <h2>Vilken diagnos skulle ni börja med?</h2>
+        <p>
+          Välj en patientgrupp där ni tror att övergången går att operationalisera särskilt väl.
+          Motivera valet utifrån vårdbehov, möjligheten att identifiera populationen och vilka utfall som finns i register.
+        </p>
+      </section>
+    </div>
+  </section>
+
+  <footer>
+    Workshopmaterial baserat på tidigare rapporter från Myndigheten för vård- och omsorgsanalys.
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <script>
+    const assignments = ["missbruk","forlossning","overgang"];
+
+    function normalizeBase(u){
+      u = (u || "").trim();
+      if(!u) return "";
+      try{
+        const url = new URL(u);
+        url.search = "";
+        url.hash = "";
+        return url.toString();
+      }catch(e){
+        return u.split("?")[0].split("#")[0];
+      }
+    }
+
+    function assignmentUrl(key){
+      const input = document.getElementById("baseUrl");
+      const base = normalizeBase(input ? input.value : window.location.href);
+      if(!base) return "";
+      return base + (base.includes("?") ? "&" : "?") + "uppgift=" + key;
+    }
+
+    function makeQRCodes(){
+      const ids = [["qr1","missbruk"],["qr2","forlossning"],["qr3","overgang"]];
+      ids.forEach(([id,key])=>{
+        const el = document.getElementById(id);
+        el.innerHTML = "";
+        const url = assignmentUrl(key);
+        if(!url){
+          el.innerHTML = '<span class="tiny">Ange webbadressen ovan.</span>';
+          return;
+        }
+        if(typeof QRCode === "undefined"){
+          el.innerHTML = '<span class="tiny">QR-biblioteket kunde inte laddas. Direktlänken fungerar ändå.</span>';
+          return;
+        }
+        new QRCode(el,{text:url,width:154,height:154,correctLevel:QRCode.CorrectLevel.M});
+      });
+    }
+
+    async function copyAssignment(key, btn){
+      const url = assignmentUrl(key);
+      if(!url) return;
+      try{
+        await navigator.clipboard.writeText(url);
+        const old = btn.textContent;
+        btn.textContent = "Kopierad";
+        setTimeout(()=>btn.textContent=old,1200);
+      }catch(e){
+        window.prompt("Kopiera länken:",url);
+      }
+    }
+
+    function showLanding(){
+      const url = new URL(window.location.href);
+      url.searchParams.delete("uppgift");
+      history.pushState({}, "", url.pathname + (url.search ? url.search : "") + url.hash);
+      render();
+      window.scrollTo({top:0,behavior:"smooth"});
+    }
+
+    function render(){
+      const p = new URLSearchParams(window.location.search);
+      const key = p.get("uppgift");
+      document.querySelectorAll(".assignment").forEach(x=>x.classList.remove("active"));
+      if(assignments.includes(key)){
+        document.getElementById("landing").classList.add("hidden");
+        document.getElementById(key).classList.add("active");
+        document.title = document.querySelector("#"+key+" .assignment-hero h1").textContent + " – Registerdataanalys";
+      }else{
+        document.getElementById("landing").classList.remove("hidden");
+        document.title = "Workshop – Registerdataanalys";
+      }
+    }
+
+    window.addEventListener("popstate",render);
+    window.addEventListener("DOMContentLoaded",()=>{
+      const input=document.getElementById("baseUrl");
+      if(location.protocol==="http:" || location.protocol==="https:"){
+        input.value=normalizeBase(window.location.href);
+      }
+      render();
+      if(input.value) makeQRCodes();
+    });
+  </script>
+</body>
+</html>
