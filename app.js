@@ -152,6 +152,9 @@ function render() {
   if (active) active.classList.add('active');
   document.title = title;
 
+  const topFacilitatorLink = document.querySelector('.topbar .facilitator-link');
+  if (topFacilitatorLink) topFacilitatorLink.hidden = activeId !== 'landing';
+
   if (activeId === 'reference') {
     setReferenceFilter(reference || 'all');
     const from = params.get('from');
