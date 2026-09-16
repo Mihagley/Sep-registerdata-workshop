@@ -1,22 +1,624 @@
 <!doctype html>
 <html lang="sv">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Workshop – Registerdataanalys</title>
-<style>
-:root{--bg:#f4f6f7;--ink:#17212b;--muted:#62707a;--line:#dce3e6;--card:#fff;--b:#176c78;--g:#23824b;--p:#7354a5;--warm:#fff7e6;--bluewash:#f1f8fa}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}a{color:#165b72}.top{background:#18252e;color:#fff;padding:18px 22px;font-weight:800}.wrap{max-width:980px;margin:auto;padding:28px 20px 64px}.hero{padding:30px 0 16px}.hero h1{font-size:clamp(2.3rem,6vw,4rem);line-height:1.02;margin:0 0 12px}.hero p{font-size:1.1rem;color:var(--muted);max-width:790px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.choice,.card,.sources{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:0 7px 25px rgba(20,40,50,.05)}.choice{padding:20px;text-decoration:none;color:inherit;min-height:205px;display:flex;flex-direction:column}.choice h2{font-size:1.22rem;line-height:1.2}.choice p{color:var(--muted);font-size:.94rem}.choice b{margin-top:auto}.c1{border-top:5px solid var(--b)}.c2{border-top:5px solid var(--g)}.c3{border-top:5px solid var(--p)}.card,.sources{padding:24px;margin:18px 0}.card h2,.sources h2{margin:0 0 10px;font-size:1.35rem}.pill,.origin-badge{display:inline-block;padding:4px 9px;border-radius:999px;background:#eef2f3;color:#50606a;text-transform:uppercase;font-weight:800;font-size:.72rem;letter-spacing:.06em;margin-bottom:8px}.gov{background:#e6f3ea;color:#185f35}.task{background:#fbfcfc}.deliver{background:var(--warm)}.qs{display:grid;grid-template-columns:1fr 1fr;gap:12px 20px;margin-top:14px}.q{border-top:1px solid var(--line);padding-top:10px}.q b{display:block}.q span{color:var(--muted);font-size:.93rem}.q .micro{display:block;margin-top:7px;padding:8px 10px;border-left:3px solid #d4a326;background:#fff8df;color:#4e4d43}.assignment{display:none}.assignment.active{display:block}.ahead{color:#fff;border-radius:18px;padding:30px;margin:18px 0}.a1 .ahead{background:linear-gradient(135deg,#0d4d55,#187a86)}.a2 .ahead{background:linear-gradient(135deg,#155f36,#2c9859)}.a3 .ahead{background:linear-gradient(135deg,#50337b,#8667b3)}.ahead small{display:block;text-transform:uppercase;letter-spacing:.1em;font-weight:800;opacity:.8;margin-bottom:7px}.ahead h1{margin:0 0 8px;font-size:clamp(2rem,5vw,3.3rem);line-height:1.05}.ahead p{margin:0;opacity:.92}.back{border:0;background:none;text-decoration:underline;cursor:pointer;padding:0;color:#566570;font-weight:700}.source a,.decision a,.sources a{font-weight:750}.source,.origin{border-left:4px solid #99a6ad}.a1 .source{border-left-color:var(--b)}.a2 .source{border-left-color:var(--g)}.a3 .source{border-left-color:var(--p)}.origin ul,.origin ol{padding-left:1.25rem}.decision{border-top:1px solid var(--line);padding-top:10px;margin-top:12px;color:var(--muted);font-size:.92rem}.mainq{border:2px solid #ccd7dc;background:#fff}.mainq h2{font-size:1rem;text-transform:uppercase;letter-spacing:.07em;color:#63717a}.mainq .question{font-size:1.3rem;line-height:1.4;font-weight:800;margin:0}.a1 .mainq{border-color:#9ac6cc}.a2 .mainq{border-color:#9dcfaf}.a3 .mainq{border-color:#c1b0dd}.sourcegrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}.sourceitem{border:1px solid var(--line);border-radius:12px;padding:16px;background:#fbfcfc}.sourceitem h3{font-size:1rem;margin:4px 0 7px}.sourceitem p{color:var(--muted);font-size:.9rem;margin:6px 0}.sources>p{color:var(--muted)}details{border:1px solid var(--line);border-radius:10px;margin:10px 0;background:#fafcfc}summary{cursor:pointer;padding:14px 16px;font-weight:750}.hint{padding:0 16px 14px;color:#39454d}.hint .so-what{margin-top:10px;padding:10px 12px;background:#fff4d7;border-left:3px solid #d59d1d}.teacher{margin-top:28px}.urlrow{display:flex;gap:8px}.urlrow input{flex:1;padding:10px;border:1px solid #cfd8dd;border-radius:8px}.btn{background:#1c2932;color:#fff;border:0;border-radius:8px;padding:10px 14px;font-weight:750;cursor:pointer}.qrgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}.qrc{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px;text-align:center}.qr{width:150px;height:150px;margin:8px auto;display:flex;align-items:center;justify-content:center}.leader{background:#eef5f6;border-color:#cbdcdf}.leader ul{margin-bottom:0}.workrule{padding:12px 14px;border-radius:10px;background:#eaf4f6;margin:16px 0 4px;font-weight:700}.framing{background:#edf7ef;border:1px solid #bcd7c3}.framing strong{font-size:1.05rem}.cheat{overflow-x:auto}.cheat table{width:100%;border-collapse:collapse;min-width:980px;font-size:.88rem}.cheat th,.cheat td{padding:10px 9px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left}.cheat th{background:#eef3f4;font-size:.8rem;text-transform:uppercase;letter-spacing:.04em}.cheat td:last-child{font-weight:650;color:#5d3d31}.cheat-note{font-size:.86rem;color:var(--muted)}.blockrow td{background:#edf7ef;font-weight:800;color:#185f35!important}.jump{display:inline-block;margin:2px 8px 2px 0;padding:8px 11px;border:1px solid #cad6da;border-radius:9px;background:#fff;text-decoration:none;font-weight:750;color:#385763}.example{background:var(--bluewash)}.six{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.six div{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px}.six b{display:block;margin-bottom:4px}.six span{font-size:.92rem;color:#4e5c65}.hidden{display:none!important}.tiny{font-size:.88rem;color:var(--muted)}@media(max-width:760px){.grid3,.qrgrid,.qs,.sourcegrid,.six{grid-template-columns:1fr}.urlrow{flex-direction:column}}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Workshop om registerdataanalys för Myndigheten för vård- och omsorgsanalys.">
+  <title>Workshop – Registerdataanalys</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<div class="top">Workshop: registerdataanalys · Myndigheten för vård- och omsorgsanalys</div>
-<section id="landing"><main class="wrap"><div class="hero"><h1>Tre analysproblem.<br>Tre registerstudier.</h1><p>Varje grupp arbetar med en tidigare Vårdanalysrapport och föreslår hur en tydlig huvudfråga skulle kunna besvaras med registerdata.</p></div>
-<div class="grid3"><a class="choice c1" href="?uppgift=missbruk"><small>GRUPP 1</small><h2>Missar vi målen med missbruks- och beroendevården?</h2><p>Hur följer vi resultat som är viktiga för patienter och brukare?</p><b>Öppna →</b></a><a class="choice c2" href="?uppgift=forlossning"><small>GRUPP 2</small><h2>I tid och otid</h2><p>Hur kan belastning, bemanning och produktivitet analyseras nationellt?</p><b>Öppna →</b></a><a class="choice c3" href="?uppgift=overgang"><small>GRUPP 3</small><h2>Förberedd och sedd</h2><p>Hur förändras kontinuiteten när unga går över till vuxensjukvård?</p><b>Öppna →</b></a></div>
-<section class="card leader"><span class="pill">Till dig som leder</span><h2>45 minuter</h2><p><strong>5 min läsa → 25 min designa → 6 min förbereda → 3 min redovisning per grupp.</strong></p><ul><li>Blanda gärna kompetenser i grupperna: exempelvis register/epidemiologi, kausal metod/ekonomi samt klinik/socialvetenskap/utredning.</li><li>Påminn grupperna: <strong>få ett grovt svar på alla sex steg innan ni finslipar något enskilt.</strong></li><li>Ledtrådarna ska användas stegvis när gruppen fastnar, inte läsas igenom från början.</li></ul></section>
-<section class="sources"><span class="pill">Källor</span><h2>Uppdragens ursprung</h2><p>Alla tre exemplen bygger på Vårdanalysrapporter; ett är ett regeringsuppdrag, två är egeninitierade.</p><div class="sourcegrid"><div class="sourceitem"><span class="origin-badge">Egeninitierad</span><h3>Missar vi målen…</h3><p>Vårdanalys initierade studien tillsammans med myndighetens patient- och brukarråd.</p><a target="_blank" rel="noopener" href="https://www.vardanalys.se/wp-content/uploads/2016/05/Rapport-2016-2-Missar-vi-m%C3%A5len-med-missbruks-och-beroendev%C3%A5rden.pdf">Rapport 2016:2</a></div><div class="sourceitem"><span class="origin-badge gov">Regeringsuppdrag</span><h3>I tid och otid</h3><p><strong>Regeringsuppdrag (regeringsbeslut I:9, 17 juni 2021):</strong> sammanställa och analysera kvinnors hälsa och förlossningsvården 2015–2022.</p><a target="_blank" rel="noopener" href="https://www.vardanalys.se/rapporter/i-tid-och-otid/">Rapport 2023:5</a></div><div class="sourceitem"><span class="origin-badge">Egeninitierad</span><h3>Förberedd och sedd</h3><p>Rapportens förord anger att Vårdanalys initierade utredningen i nära samverkan med myndighetens patient- och brukarråd.</p><a target="_blank" rel="noopener" href="https://www.vardanalys.se/wp-content/uploads/2019/10/Rapport-2019-6-F%C3%B6rberedd-och-sedd.pdf">Rapport 2019:6</a></div></div></section>
-<section id="fusklapp" class="card cheat"><span class="pill">Gemensam referens</span><h2>Register-fusklapp: vad ser vi – och vad ser vi inte?</h2><p>Det viktigaste är ofta den sista kolumnen. Ett registermått är inte samma sak som den verklighet ni vill mäta.</p><table><thead><tr><th>Register / källa</th><th>Innehåll</th><th>Observationsenhet</th><th>Uppdatering</th><th>Länknyckel</th><th>Täcker INTE</th></tr></thead><tbody><tr><td><strong>Patientregistret (PAR)</strong></td><td>Slutenvård och specialiserad öppenvård; diagnoser, åtgärder, klinik/vårdkontakt.</td><td>Vårdkontakt / vårdtillfälle</td><td>Månadsvis</td><td>Personnummer</td><td>Primärvård. Somatisk öppenvård utförd enbart av andra yrkesgrupper än läkare. Vissa privata vårdgivare/variabler har bortfall.</td></tr><tr><td><strong>Läkemedelsregistret (LMED)</strong></td><td>Uthämtade receptläkemedel, ATC, datum, mängd, förskrivare.</td><td>Apoteksexpedition</td><td>Månadsvis</td><td>Personnummer</td><td>Rekvisitionsläkemedel som ges direkt i vården, receptfritt och faktisk följsamhet/intag.</td></tr><tr class="blockrow"><td colspan="6">Förlossningsblocket – patientdata är nationella; bemanning på klinik/pass är datagapet</td></tr><tr><td><strong>Medicinska födelseregistret (MFR)</strong></td><td>Nationellt register över graviditeter som lett till förlossning; rik case mix, förlossningsklinik, förlossningssätt samt mor- och barnutfall.</td><td>Förlossning / fött barn</td><td>Årlig officiell statistik; registerdata rapporteras löpande från vården</td><td>Moderns och barnets personnummer</td><td>Hur många barnmorskor/läkare som faktiskt var i tjänst på kliniken ett visst pass eller en viss timme.</td></tr><tr><td><strong>HOSP</strong></td><td>Legitimation och behörighet för legitimerad hälso- och sjukvårdspersonal, inklusive barnmorskor.</td><td>Person</td><td>Aktuellt behörighetsregister</td><td>Personnummer / samordningsnummer</td><td>Var personen faktiskt arbetar vid ett visst tillfälle, tjänstgöringsgrad på viss klinik, schemalagda eller bemannade timmar per pass.</td></tr><tr><td><strong>SKR:s regionpersonalstatistik</strong></td><td>Anställda och faktiska årsarbetare efter personalgrupp och region; bland annat barnmorskor.</td><td>Personalgrupp × region × år</td><td>Årligen</td><td>Region, år, personalgrupp/AID</td><td>Kliniknivå och pass-/timnivå. Ett regionalt års-FTE kan inte säga hur många som var i tjänst på en viss förlossningsklinik när belastningstoppen inträffade.</td></tr><tr><td><strong>SCB Yrkesregistret</strong></td><td>Yrke, sysselsättningsförhållande, arbetsställets belägenhet och tjänstgöringsomfattning.</td><td>Person / anställning, årsreferens</td><td>Årsvis</td><td>Personnummer, arbetsställe</td><td>Bemannade timmar på en viss klinik eller ett visst arbetspass; exakt vilka personer som var i tjänst när patientinflödet var högt.</td></tr><tr><td><strong>Regionala schema-/löne-/HR-data</strong></td><td>Kan innehålla schemalagd och/eller arbetad tid, arbetsplats, OB, frånvaro och ibland kompetens-/rolluppgifter.</td><td>Anställning / arbetspass / timme</td><td>Lokalt, ofta löpande</td><td>Personal-ID/personnummer, arbetsplats, tid</td><td>Nationell standardisering och självklar jämförbarhet. Detta är typiskt den datakälla som krävs för klinik/pass men som inte finns som ett enda nationellt register.</td></tr><tr><td><strong>Dödsorsaksregistret (DORS)</strong></td><td>Dödsdatum och dödsorsaker.</td><td>Dödsfall</td><td>Månadsvis</td><td>Personnummer</td><td>Icke-dödliga hälsoutfall; dödfödda.</td></tr><tr><td><strong>LISA</strong></td><td>Utbildning, sysselsättning, inkomster, arbetslöshet, sjuk- och föräldraförsäkring.</td><td>Individ-år</td><td>Årsvis, cirka 14 mån eftersläpning</td><td>Personnummer</td><td>Kortsiktiga förändringar inom året; subjektiv arbetsförmåga; detaljer om faktisk arbetsmiljö.</td></tr><tr><td><strong>RTB</strong></td><td>Folkbokföring, demografi, familje-/hushållskopplingar, migration.</td><td>Individ / hushåll</td><td>Månadsvis</td><td>Personnummer, hushålls-/familje-ID</td><td>Faktisk boendekvalitet, hemlöshet som inte avspeglas korrekt i folkbokföringen, informella relationer.</td></tr><tr><td><strong>LVM-registret</strong></td><td>Personer som tvångsvårdas enligt LVM: ansökan, omhändertagande och utskrivning.</td><td>Person / LVM-händelse</td><td>Årsstatistik</td><td>Personnummer</td><td>Frivillig kommunal missbruksvård och hela gruppen med skadligt bruk/beroende.</td></tr><tr><td><strong>Kommunal missbruks-/beroendestatistik</strong></td><td>Officiell statistik om socialtjänstens insatser till vuxna.</td><td>Kommun / aggregerad statistik</td><td>Årsvis</td><td>Inte en heltäckande nationell individlänk i dagens statistik</td><td>Heltäckande individnivå. Rapporteringen till nuvarande statistik är frivillig; nytt socialdataregister införs gradvis från 2026.</td></tr><tr><td><strong>Bättre Beroendevård (tidigare SBR)</strong></td><td>Kvalitetsregister för specialiserad beroendevård; symtom, problem, behandling och kvalitetsindikatorer.</td><td>Registrerad patient / vårdepisod</td><td>Löpande kvalitetsregister</td><td>Personnummer i registermiljön</td><td>Inte ett heltäckande populationsregister; täcker inte primärvård eller kommunal socialtjänst. Historiskt låg individtäckning – kontrollera aktuell täckning före analys.</td></tr></tbody></table><p class="cheat-note">Fördjupning: <a target="_blank" href="https://www.socialstyrelsen.se/statistik-och-data/register/patientregistret/">PAR</a> · <a target="_blank" href="https://www.socialstyrelsen.se/statistik-och-data/register/lakemedelsregistret/">LMED</a> · <a target="_blank" href="https://www.socialstyrelsen.se/statistik-och-data/register/medicinska-fodelseregistret/">MFR</a> · <a target="_blank" href="https://www.socialstyrelsen.se/statistik-och-data/register/halso-och-sjukvardspersonal/">HOSP</a> · <a target="_blank" href="https://skr.se/personalochkompetensforsorjning/statistikompersonalochkompetensforsorjning/personalstatistik/tabellerregionanstalldpersonal2025.9189.html">SKR regionpersonal</a> · <a target="_blank" href="https://www.scb.se/vara-tjanster/bestall-data-och-statistik/register/yrkesregistret/">SCB Yrkesregistret</a> · <a target="_blank" href="https://www.socialstyrelsen.se/statistik-och-data/register/dodsorsaksregistret/">DORS</a> · <a target="_blank" href="https://www.scb.se/vara-tjanster/bestall-data-och-statistik/register/lisa/">LISA</a> · <a target="_blank" href="https://www.scb.se/vara-tjanster/bestall-data-och-statistik/register/registret-over-totalbefolkningen-rtb/">RTB</a> · <a target="_blank" href="https://www.socialstyrelsen.se/statistik-och-data/register/tvangsvard-av-missbrukare/">LVM</a> · <a target="_blank" href="https://www.battreberoendevard.regionstockholm.se/">Bättre Beroendevård</a>.</p></section>
-<section class="card example"><span class="pill">Se ett exempel</span><h2>Ett färdigt sexstegsupplägg – annat fall</h2><details><summary>Öppna exempel: återgång i arbete efter hjärtinfarkt</summary><div class="hint"><p><strong>Huvudfråga:</strong> Hur utvecklas arbetsmarknadsanknytningen under två år efter en första hjärtinfarkt bland personer i arbetsför ålder?</p><div class="six"><div><b>1. Population</b><span>40–64-åringar med första registrerade hjärtinfarkt i PAR; exkludera tidigare infarkt under en definierad washout-period.</span></div><div><b>2. Startpunkt</b><span>Utskrivningsdatum från indexvårdtillfället = t0.</span></div><div><b>3. Utfall</b><span>Arbetsinkomst, sysselsättning, sjukfrånvaro och eventuell sjuk-/aktivitetsersättning.</span></div><div><b>4. Data</b><span>PAR + LISA + RTB + DORS.</span></div><div><b>5. Jämförelse</b><span>Följ individens utveckling före/efter och jämför med en relevant kontrollgrupp utan infarkt med samma kalenderperiod och liknande observerbara egenskaper. För en kausal fråga krävs starkare antaganden/design än en enkel matchning.</span></div><div><b>6. Begränsning</b><span>Registren visar inte arbetsgivarens anpassningar, motivation, upplevd arbetsförmåga eller all primärvårdsrehabilitering.</span></div></div></div></details></section>
-<section class="card teacher"><span class="pill">För workshopledaren</span><h2>QR-koder</h2><p>Varje QR-kod leder direkt till rätt grupp.</p><div class="urlrow"><input id="baseUrl"><button class="btn" onclick="makeQR()">Skapa QR-koder</button></div><div class="qrgrid"><div class="qrc"><b>Grupp 1</b><div id="qr1" class="qr"></div></div><div class="qrc"><b>Grupp 2</b><div id="qr2" class="qr"></div></div><div class="qrc"><b>Grupp 3</b><div id="qr3" class="qr"></div></div></div></section></main></section>
-<section id="missbruk" class="assignment a1"><main class="wrap"><button class="back" onclick="home()">← Till startsidan</button><header class="ahead"><small>Grupp 1 · Registerdataanalys</small><h1>Missar vi målen med missbruks- och beroendevården?</h1><p>Bygg ett registerbaserat sätt att följa resultat som patienter och brukare själva tycker är viktiga.</p></header><a class="jump" href="#fusklapp" onclick="homeTo('fusklapp')">Register-fusklapp</a><section class="card source"><span class="pill">Rapporten</span><h2>Utgångspunkt</h2><p>Rapporten visar att viktiga resultat handlar om mer än vårdkonsumtion – exempelvis hälsa, försörjning, arbete, boende och kriminalitet.</p><p class="tiny"><a target="_blank" href="https://www.vardanalys.se/rapporter/missar-vi-malen-med-missbruks-och-beroendevarden/">Rapport 2016:2</a></p></section><section class="card origin"><span class="origin-badge">Egeninitierad studie</span><h2>Den ursprungliga frågan</h2><p>Vårdanalys initierade studien tillsammans med myndighetens patient- och brukarråd. Studien kartlade vilka resultat – från vårdkonsumtion till hälsa, försörjning, arbete, boende och relationer – som är viktiga för personer i missbruks- och beroendevården, och konstaterade att det saknas en gemensam struktur för att följa upp dem.</p></section><section class="card mainq"><h2>Huvudfråga</h2><p class="question">Hur utvecklas patientviktiga resultat – som hälsa, försörjning, arbete, boende och kriminalitet – över tid efter en persons första dokumenterade kontakt med missbruks- och beroendevården, och vilka viktiga resultat går ändå inte att fånga i register?</p></section><section class="card task"><span class="pill">Ert uppdrag</span><h2>Designa den nationella analysen</h2><p><strong>Skapa ett registerbaserat uppföljningssystem som kan besvara huvudfrågan.</strong></p><div class="workrule">Arbetssätt: få ett grovt svar på alla sex steg innan ni finslipar något enskilt.</div><div class="qs"><div class="q"><b>1. Population</b><span>Vilka ska ingå och hur identifieras de?</span></div><div class="q"><b>2. Startpunkt</b><span>När börjar uppföljningen?</span></div><div class="q"><b>3. Utfall</b><span>Vilka 3–5 patientviktiga resultat mäter ni?</span></div><div class="q"><b>4. Data</b><span>Vilka register måste länkas?</span></div><div class="q"><b>5. Jämförelse</b><span>Vad är en trovärdig jämförelse om ni vill uttala er om effekt?</span></div><div class="q"><b>6. Begränsning</b><span>Vilka viktiga resultat saknas ändå?</span></div></div></section><section class="card deliver"><h2>3-minutersredovisning</h2><p><strong>Population → Startpunkt → Utfall → Data → Jämförelse → Begränsning</strong></p></section><section class="card"><span class="pill">Ledtrådar</span><h2>Fastnat?</h2><details><summary>Ledtråd 1 – Populationen</summary><div class="hint">Diagnos, vårdkontakt, läkemedel eller socialtjänstinsats fångar olika grupper. Vilka missar ni?<div class="so-what"><strong>So what?</strong> Exempel: definierar ni kohorten via slutenvårdsdiagnos i patientregistret missar ni alla som bara nått primärvården eller kommunal socialtjänst — kanske de flesta.</div></div></details><details><summary>Ledtråd 2 – Tidslinjen</summary><div class="hint">Rita t−3, t−2, t−1, första dokumenterade kontakt vid t, t+1, t+2, t+3. Fundera på vad “första” betyder när PAR inte innehåller primärvård.</div></details><details><summary>Ledtråd 3 – Resultat eller effekt?</summary><div class="hint"><p>Att ett utfall förbättras efter vårdkontakt betyder inte att vården orsakade förbättringen.</p><p><strong>Confounding by indication:</strong> De som får en insats skiljer sig från dem som inte får det på sätt som också påverkar utfallet (svårare problem, mer motivation, mer kontakt med systemet). En trovärdig jämförelse måste hantera den skillnaden — inte bara jämföra före och efter.</p></div></details><details><summary>Ledtråd 4 – Reform som brytpunkt</summary><div class="hint"><p><strong>Reform som brytpunkt.</strong> Fanns det en lagändring, ny nationell riktlinje eller reform vid en bestämd tidpunkt? En daterad förändring ger en före/efter-brytpunkt och är ofta vägen från att <em>beskriva en utveckling</em> till att närma sig en <em>effekt</em> (jfr ledtråd 3). Men ett före/efter enbart på dem som fått vård räcker inte — ni behöver en grupp som inte omfattades av förändringen under samma period.</p></div></details><details><summary>Ledtråd 5 – Vad går inte att mäta?</summary><div class="hint">Relationer, stigma, trygghet, upplevd återhämtning och andra patientnära dimensioner kan vara centrala men saknas i administrativa register.</div></details></section></main></section>
-<section id="forlossning" class="assignment a2"><main class="wrap"><button class="back" onclick="home()">← Till startsidan</button><header class="ahead"><small>Grupp 2 · Registerdataanalys</small><h1>I tid och otid</h1><p>Gör frågor om belastning, bemanning och produktivitet i förlossningsvården nationellt analyserbara.</p></header><a class="jump" href="#fusklapp" onclick="homeTo('fusklapp')">Register-fusklapp</a><section class="card source"><span class="pill">Rapporten</span><h2>Utgångspunkt</h2><p>Rapporten studerade bemanning och produktivitet vid tio förlossningskliniker med bland annat schemadata, personaluppgifter och intervjuer.</p><p class="tiny"><a target="_blank" href="https://www.vardanalys.se/rapporter/i-tid-och-otid/">Rapport 2023:5</a></p></section><section class="card origin"><span class="origin-badge gov">Regeringsuppdrag</span><h2>Vad regeringen bad myndigheten göra</h2><p><strong>Regeringsuppdrag (regeringsbeslut I:9, 17 juni 2021):</strong> sammanställa och analysera kvinnors hälsa och förlossningsvården 2015–2022.</p><p>Fördjupningsstudien <em>I tid och otid</em> fokuserade bland annat på variation i belastning, bemanningsläge, arbetstid och produktivitet.</p></section><section class="card framing"><span class="pill gov">Viktig ram</span><h2>Det här uppdraget testar var registren tar slut</h2><p><strong>Födelsesidan finns nationellt och är rik; bemanningssidan gör det oftast inte.</strong> Att precist ringa in var de nationella data inte räcker (steg 6) är här halva leveransen, inte en eftertanke.</p></section><section class="card mainq"><h2>Huvudfråga</h2><p class="question">Hur varierar belastningen på svenska förlossningskliniker över tid, hur hänger den samman med bemanning och produktivitet — och var tar de nationella data slut?</p></section><section class="card example"><span class="pill">Se ett exempel först</span><h2>Fjärde fall: akutmottagning</h2><details><summary>Öppna sexstegsexempel innan ni börjar</summary><div class="hint"><p><strong>Huvudfråga:</strong> Hur varierar belastningen på en akutmottagning över dygnet, hur hänger den samman med väntetider och bemanning — och vilka delar kan inte studeras nationellt?</p><div class="six"><div><b>1. Belastning</b><span>Antal nyanlända patienter och, om data finns, samtidiga patienter per timme.</span></div><div><b>2. Analysenhet</b><span>Akutmottagning × timme. Dygn eller månad skulle jämna ut belastningstopparna.</span></div><div><b>3. Bemanning</b><span>Antal sjuksköterske- och läkartimmar i tjänst från lokala schemadata.</span></div><div><b>4. Produktivitet/utfall</b><span>Väntetid, patienter per bemannad timme och andel som lämnar utan att vara färdigbehandlade. Tolka inte “fler patienter per timme” automatiskt som bättre.</span></div><div><b>5. Jämförelse</b><span>Jämför samma mottagning vid liknande veckodagar/tider och kontrollera case mix. Bemanning planeras efter förväntad belastning, så sambandet är inte automatiskt kausalt.</span></div><div><b>6. Datagap</b><span>Nationella patientdata kan beskriva delar av inflödet, men bemanning per mottagning/timme kräver lokala HR-/schemadata. En nationell studie blir därför ofullständig utan sådan insamling.</span></div></div></div></details></section><section class="card task"><span class="pill">Ert uppdrag</span><h2>Gör huvudfrågan så nationellt analyserbar som möjligt</h2><p><strong>Bygg ett upplägg som mäter belastning, bemanning och produktivitet på jämförbar nivå — och var tydliga med var nationella data inte räcker.</strong></p><div class="workrule">Arbetssätt: få ett grovt svar på alla sex steg innan ni finslipar något enskilt.</div><div class="qs"><div class="q"><b>1. Belastning</b><span>Hur definierar ni hög respektive låg belastning?</span></div><div class="q"><b>2. Analysenhet</b><span>Födsel, klinik, timme, arbetspass, dag eller månad?</span><span class="micro"><strong>So what?</strong> Belastning är ett pass- och timfenomen; nationella data landar ofta på grövre nivå. Väljer ni klinik-månad jämnar ni lätt ut just de toppar som <em>är</em> belastningen. Enhetens upplösning måste matcha fenomenets.</span></div><div class="q"><b>3. Bemanning</b><span>Hur mäter ni faktisk personalresurs på samma tidsnivå som belastningen?</span></div><div class="q"><b>4. Produktivitet</b><span>Vilken resurs relateras till vilken produktion — och vad betyder ett högt värde?</span></div><div class="q"><b>5. Data/jämförelse</b><span>Vilka register och administrativa data behövs, och hur görs kliniker/tider jämförbara?</span></div><div class="q"><b>6. Datagap</b><span>Vilken del av huvudfrågan går inte att besvara nationellt med dagens data?</span></div></div></section><section class="card deliver"><h2>3-minutersredovisning</h2><p><strong>Belastningsmått → Analysenhet → Bemanningsmått → Produktivitetsmått → Data/jämförelse → Datagap</strong></p></section><section class="card"><span class="pill">Ledtrådar</span><h2>Fastnat?</h2><details><summary>Ledtråd 1 – Patientinflöde är inte bemanning</summary><div class="hint"><strong>Patientinflöde är inte bemanning.</strong> Medicinska födelseregistret beskriver inflöde och case mix nationellt – men inte hur många barnmorskor som var i tjänst ett visst pass. Den uppgiften finns oftast bara som lokala schema- eller lönedata, medan nationellt jämförbar personalstatistik typiskt är betydligt grövre, exempelvis årliga regionala årsarbetare. Fråga er tidigt: finns bemanningsdata alls på den nivå er fråga kräver?</div></details><details><summary>Ledtråd 2 – Analysenheten avgör vad ni kan se</summary><div class="hint"><strong>Belastning är ett pass- och timfenomen.</strong> Nationella data landar ofta på månad, år eller region. Väljer ni en för grov enhet, till exempel klinik-månad, jämnar ni ut just de toppar som <em>är</em> belastningen. Enhetens upplösning måste matcha fenomenets.</div></details><details><summary>Ledtråd 3 – Är hög produktivitet bra?</summary><div class="hint"><strong>Är hög produktivitet bra?</strong> Fler förlossningar per bemannad barnmorsketimme kan lika gärna betyda underbemanning och sämre vård som effektivitet. “Produktivitet” är här ett omtvistat mått, inte ett självklart gott – säg vad ett högt värde faktiskt betyder innan ni tolkar det.</div></details><details><summary>Ledtråd 4 – Bemanning är endogen</summary><div class="hint"><strong>Bemanning är inte oberoende av belastning.</strong> Scheman planeras utifrån förväntad belastning, så bemanning och belastning bestäms delvis tillsammans. Det gör sambandet mellan dem svårare att tolka än det ser ut.</div></details><details><summary>Ledtråd 5 – Jämförelsen</summary><div class="hint">Jämför helst kliniker med sig själva över tid och hantera kalenderfaktorer som år, månad, veckodag och tid på dygnet. Patientmix, planerade kejsarsnitt och induktioner kan annars skapa skensamband.</div></details><details><summary>Ledtråd 6 – Ett steg längre</summary><div class="hint">När ni har ett belastnings- eller bemanningsmått: vilka patientutfall skulle kunna länkas på individnivå, och vad krävs för att tolka sambandet?</div></details></section></main></section>
-<section id="overgang" class="assignment a3"><main class="wrap"><button class="back" onclick="home()">← Till startsidan</button><header class="ahead"><small>Grupp 3 · Registerdataanalys</small><h1>Förberedd och sedd</h1><p>Studera vad som händer när unga med långvariga sjukdomar och tillstånd går från barn- till vuxensjukvård.</p></header><a class="jump" href="#fusklapp" onclick="homeTo('fusklapp')">Register-fusklapp</a><section class="card source"><span class="pill">Rapporten</span><h2>Utgångspunkt</h2><p>Rapporten visar problem och risker i övergången och pekar på bristande nationell uppföljning.</p><p class="tiny"><a target="_blank" href="https://www.vardanalys.se/rapporter/forberedd-och-sedd/">Rapport 2019:6</a></p></section><section class="card origin"><span class="origin-badge">Egeninitierad studie</span><h2>Den ursprungliga frågan</h2><p>Rapportens förord anger att Vårdanalys initierade utredningen i nära samverkan med patient- och brukarrådet. Studien belyste forskning, erfarenheter hos unga, närstående och vårdpersonal samt åtgärder som kan förbättra övergången. Rapporten efterlyste också bättre nationell uppföljning och utvärdering.</p></section><section class="card mainq"><h2>Huvudfråga</h2><p class="question">Hur förändras kontinuiteten i vården när unga med långvariga sjukdomar eller tillstånd går från barn- till vuxensjukvård, och vilka grupper har störst vårdglapp?</p></section><section class="card task"><span class="pill">Ert uppdrag</span><h2>Bygg den nationella uppföljningen</h2><p><strong>Utforma en registerbaserad studie som kan besvara huvudfrågan.</strong></p><div class="workrule">Arbetssätt: få ett grovt svar på alla sex steg innan ni finslipar något enskilt.</div><div class="qs"><div class="q"><b>1. Population</b><span>Vilka unga har ett långvarigt vårdbehov?</span></div><div class="q"><b>2. Övergång</b><span>Hur identifieras sista barn- och första vuxenvårdskontakt?</span></div><div class="q"><b>3. Kontinuitet</b><span>Hur definieras ett vårdglapp?</span></div><div class="q"><b>4. Data</b><span>Vilka register krävs?</span></div><div class="q"><b>5. Jämförelse</b><span>Diagnoser, regioner, kohorter eller före/efter?</span></div><div class="q"><b>6. Tolkning</b><span>Hur skiljer ni övergången från vanlig åldersutveckling?</span></div></div></section><section class="card deliver"><h2>3-minutersredovisning</h2><p><strong>Population → Övergång → Kontinuitetsmått → Data → Jämförelse → Begränsning</strong></p></section><section class="card"><span class="pill">Ledtrådar</span><h2>Fastnat?</h2><details><summary>Ledtråd 1 – Välj en grupp med kontinuerligt vårdbehov</summary><div class="hint">Ett glapp är lättare att tolka om regelbunden uppföljning normalt förväntas.<div class="so-what"><strong>So what?</strong> En patient som normalt ses var tredje månad och försvinner i 12 månader är något annat än en patient som normalt bara behöver ett årligt besök.</div></div></details><details><summary>Ledtråd 2 – Är 18-årsdagen övergången?</summary><div class="hint">Överföringen kan ske före eller efter 18. Kan ni observera sista barnspecialistkontakt och första vuxenspecialistkontakt? Vad gör ni med dem som aldrig dyker upp?</div></details><details><summary>Ledtråd 3 – Gör kontinuitet mätbar</summary><div class="hint">Tid till vuxenvårdsbesök, längsta glapp, utebliven uppföljning eller kontinuitet i läkemedelsuttag är olika mått och svarar på olika frågor.</div></details><details><summary>Ledtråd 4 – Jämförelsen</summary><div class="hint">En ren före/efter runt 18 års ålder blandar ihop övergången med sådant som ändå förändras när unga blir äldre. Finns diagnoser, regioner eller övergångsmodeller med olika tidpunkter som kan ge en bättre jämförelse?</div></details><details><summary>Ledtråd 5 – Lägg till konsekvenser</summary><div class="hint">Akutbesök, slutenvård, komplikationer eller läkemedelsavbrott kan visa om ett vårdglapp sammanfaller med sämre utfall.</div></details></section></main></section>
-<footer class="wrap tiny">Workshopmaterial baserat på tidigare rapporter från Myndigheten för vård- och omsorgsanalys.</footer><script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script><script>const keys=['missbruk','forlossning','overgang'];function base(){let u=(document.getElementById('baseUrl').value||location.href).split('?')[0].split('#')[0];return u}function link(k){return base()+'?uppgift='+k}function makeQR(){[['qr1','missbruk'],['qr2','forlossning'],['qr3','overgang']].forEach(([id,k])=>{let e=document.getElementById(id);e.innerHTML='';if(typeof QRCode!=='undefined')new QRCode(e,{text:link(k),width:145,height:145});})}function render(){let k=new URLSearchParams(location.search).get('uppgift');document.querySelectorAll('.assignment').forEach(x=>x.classList.remove('active'));if(keys.includes(k)){document.getElementById('landing').classList.add('hidden');document.getElementById(k).classList.add('active')}else document.getElementById('landing').classList.remove('hidden')}function home(){history.pushState({},'',location.pathname);render();scrollTo(0,0)}function homeTo(id){history.pushState({},'',location.pathname+'#'+id);render();setTimeout(()=>document.getElementById(id)?.scrollIntoView({behavior:'smooth'}),20)}addEventListener('popstate',render);addEventListener('DOMContentLoaded',()=>{document.getElementById('baseUrl').value=location.origin+location.pathname;render();makeQR()});</script></body></html>
+  <header class="topbar no-print">
+    <div class="topbar-inner">
+      <div>Workshop: registerdataanalys · Myndigheten för vård- och omsorgsanalys</div>
+      <a class="facilitator-link" href="?ledare=1">Workshopledare →</a>
+    </div>
+  </header>
+
+  <div id="status" class="status" role="status" aria-live="polite" hidden></div>
+
+  <!-- DELTAGARNAS STARTSIDA -->
+  <section id="landing" class="view active">
+    <main class="wrap">
+      <div class="hero">
+        <span class="eyebrow">Gruppövning · 45 minuter</span>
+        <h1>Från utredningsfråga till registerstudie</h1>
+        <p>Tre grupper arbetar med varsin tidigare Vårdanalysrapport. Uppgiften är att avgöra vad registerdata faktiskt kan säga, vilken design som krävs och var data slutar vara tillräckliga.</p>
+      </div>
+
+      <section class="card">
+        <span class="pill">Efter övningen ska ni kunna</span>
+        <ul class="objectives">
+          <li>översätta en utredningsfråga till mätbara registervariabler</li>
+          <li>välja population, analysenhet och tidslinje</li>
+          <li>skilja beskrivning och samband från effektfrågor</li>
+          <li>identifiera de viktigaste datagapen</li>
+        </ul>
+      </section>
+
+      <div class="group-grid" aria-label="Gruppuppgifter">
+        <a class="group-card g1" href="?uppgift=missbruk">
+          <span class="eyebrow">Grupp 1</span>
+          <h2>Missar vi målen med missbruks- och beroendevården?</h2>
+          <p>Patientviktiga resultat kontra vad administrativa register faktiskt kan observera.</p>
+          <strong>Till uppgiften →</strong>
+        </a>
+        <a class="group-card g2" href="?uppgift=forlossning">
+          <span class="eyebrow">Grupp 2</span>
+          <h2>I tid och otid</h2>
+          <p>Analysenhet, tidsupplösning och en central bemanningsvariabel som saknas nationellt.</p>
+          <strong>Till uppgiften →</strong>
+        </a>
+        <a class="group-card g3" href="?uppgift=overgang">
+          <span class="eyebrow">Grupp 3</span>
+          <h2>Förberedd och sedd</h2>
+          <p>Att operationalisera en vårdövergång som inte har ett enda självklart datum.</p>
+          <strong>Till uppgiften →</strong>
+        </a>
+      </div>
+
+      <section class="card principle">
+        <span class="pill">Gemensam princip</span>
+        <h2>Mätning är inte samma sak som verklighet</h2>
+        <p class="formula">Begrepp → registervariabel → vad missar variabeln?</p>
+        <div class="example-grid">
+          <div><b>Hälsa → vårdkontakter</b><span>En person kan må dåligt utan att synas i specialistvården.</span></div>
+          <div><b>Arbete → årsinkomst/sysselsättning</b><span>Säger lite om arbetsvillkor eller om arbetet känns hållbart.</span></div>
+          <div><b>Kontinuitet → tid mellan registrerade kontakter</b><span>Är inte samma sak som upplevd kontinuitet i vården.</span></div>
+          <div><b>Bemanning → regionala årsarbetare</b><span>Säger inte vem som faktiskt arbetade på en förlossningsklinik klockan 03.</span></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <span class="pill">Börja här</span>
+        <h2>Vad vill ni kunna säga?</h2>
+        <div class="claim-grid">
+          <div class="claim"><b>A. Beskriva</b><p>Hur ser något ut? Hur förändras det? Vilka grupper skiljer sig åt?</p></div>
+          <div class="claim"><b>B. Förklara samband</b><p>Hur samvarierar X och Y? Vilka alternativa förklaringar behöver hanteras?</p></div>
+          <div class="claim"><b>C. Uttala sig om effekt</b><p>Vad skulle ha hänt utan exponeringen, reformen eller insatsen? Vilken jämförelse kan approximera det?</p></div>
+        </div>
+        <p class="claim-note">Börja inte med metodnamnet. Börja med vilket påstående analysen ska kunna stödja. <em>En beskrivande analys är inte en misslyckad effektstudie.</em></p>
+      </section>
+
+      <section class="card">
+        <span class="pill">Gemensam arbetsgång</span>
+        <h2>Samma sex steg i alla tre grupper</h2>
+        <div class="framework-grid">
+          <div class="framework-step"><span class="num">Steg 1</span><h3>Fråga och population</h3><p>Vad vill vi veta? Vilka personer eller verksamheter gäller frågan?</p></div>
+          <div class="framework-step"><span class="num">Steg 2</span><h3>Exponering/startpunkt</h3><p>Vad sätter tidslinjen i gång? Kan startpunkten faktiskt observeras?</p></div>
+          <div class="framework-step"><span class="num">Steg 3</span><h3>Utfall</h3><p>Vad vill vi egentligen mäta? Vilken registervariabel blir proxyn?</p></div>
+          <div class="framework-step"><span class="num">Steg 4</span><h3>Data och analysenhet</h3><p>Vilka data behövs? Person, vårdkontakt, klinik × månad eller klinik × timme?</p></div>
+          <div class="framework-step"><span class="num">Steg 5</span><h3>Jämförelse och tolkning</h3><p>Beskrivande, associativ eller kausal analys? Om jämförelse behövs: med vem eller vad?</p></div>
+          <div class="framework-step"><span class="num">Steg 6</span><h3>Datagap</h3><p>Vad kan vi fortfarande inte säga? Vilken ytterligare datakälla skulle behövas?</p></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <span class="pill">Genomförbarhetskontroll</span>
+        <h2>”Data finns” betyder inte att analysen går att göra</h2>
+        <ul class="checklist">
+          <li>Finns variabeln?</li>
+          <li>På vilken tidsupplösning?</li>
+          <li>På vilken geografisk eller organisatorisk nivå?</li>
+          <li>För vilka år?</li>
+          <li>Finns en användbar länknyckel?</li>
+          <li>Är täckningen rimligt komplett?</li>
+          <li>Mäter variabeln faktiskt det begrepp ni vill studera?</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <span class="pill">När ni behöver datahjälp</span>
+        <h2>Registerreferens</h2>
+        <p>Öppna den gemensamma referensen och filtrera på er grupp. Den visar framför allt vad källorna <strong>inte</strong> täcker.</p>
+        <a class="button" href="?referens=all">Öppna registerreferensen</a>
+      </section>
+
+      <details class="compact-details">
+        <summary>Behöver ni mer hjälp? Öppna ett analogt sexstegsexempel</summary>
+        <div class="details-body">
+          <p>Exemplet gäller ett fjärde, ej tilldelat fall och visar formen på ett färdigt svar utan att lösa någon av gruppuppgifterna.</p>
+          <button class="button" type="button" onclick="openExample()">Öppna analogt exempel</button>
+        </div>
+      </details>
+
+      <details class="compact-details">
+        <summary>Källor och uppdragens ursprung</summary>
+        <div class="details-body">
+          <p>Alla tre exemplen bygger på Vårdanalysrapporter; ett är ett regeringsuppdrag, två är egeninitierade.</p>
+          <div class="source-grid">
+            <div class="source-item"><span class="pill">Egeninitierad</span><h3>Missar vi målen…</h3><p>Vårdanalys initierade studien tillsammans med myndighetens patient- och brukarråd.</p><a target="_blank" rel="noopener" href="https://www.vardanalys.se/rapporter/missar-vi-malen-med-missbruks-och-beroendevarden/">Rapport 2016:2</a></div>
+            <div class="source-item"><span class="pill gov">Regeringsuppdrag</span><h3>I tid och otid</h3><p><strong>Regeringsuppdrag (regeringsbeslut I:9, 17 juni 2021):</strong> sammanställa och analysera kvinnors hälsa och förlossningsvården 2015–2022.</p><a target="_blank" rel="noopener" href="https://www.vardanalys.se/rapporter/i-tid-och-otid/">Rapport 2023:5</a></div>
+            <div class="source-item"><span class="pill">Egeninitierad</span><h3>Förberedd och sedd</h3><p>Rapportens förord anger att Vårdanalys initierade utredningen i nära samverkan med myndighetens patient- och brukarråd.</p><a target="_blank" rel="noopener" href="https://www.vardanalys.se/rapporter/forberedd-och-sedd/">Rapport 2019:6</a></div>
+          </div>
+        </div>
+      </details>
+
+      <a class="subtle-link facilitator-link" href="?ledare=1">Workshopledare →</a>
+    </main>
+  </section>
+
+  <!-- GEMENSAM REGISTERREFERENS -->
+  <section id="reference" class="view">
+    <main class="wrap">
+      <div class="reference-head">
+        <div>
+          <span class="eyebrow">Gemensam referens</span>
+          <h1 style="margin:.2rem 0 .4rem">Vad ser vi – och vad ser vi inte?</h1>
+          <p style="margin:0;color:var(--muted)">Ett registermått är inte samma sak som den verklighet ni vill mäta. Börja med den röda rutan: <strong>Täcker inte</strong>.</p>
+          <p class="fact-date">Senast faktagranskad: september 2026</p>
+        </div>
+        <button class="button back-link" id="reference-back-label" type="button" onclick="backFromReference()">← Till startsidan</button>
+      </div>
+
+      <div class="filterbar" aria-label="Filtrera registerreferens">
+        <button class="chip" type="button" data-filter="missbruk" aria-pressed="false">Missbruk</button>
+        <button class="chip" type="button" data-filter="forlossning" aria-pressed="false">Förlossning</button>
+        <button class="chip" type="button" data-filter="overgang" aria-pressed="false">Övergång</button>
+        <button class="chip" type="button" data-filter="all" aria-pressed="false">Visa alla</button>
+      </div>
+      <h2 id="reference-filter-title" style="font-size:1.15rem">Alla källor</h2>
+
+      <section class="source-category" data-category="health">
+        <h2>Nationella hälsodataregister</h2>
+        <div class="source-cards">
+          <article class="register-card" data-groups="missbruk overgang">
+            <h3>Patientregistret (PAR)</h3>
+            <dl><dt>Innehåller</dt><dd>Slutenvård och specialiserad öppenvård; diagnoser, åtgärder och vårdkontakter.</dd><dt>Enhet</dt><dd>Vårdkontakt eller vårdtillfälle.</dd><dt>Länkas via</dt><dd>Personnummer.</dd></dl>
+            <div class="gap"><strong>Täcker inte:</strong> primärvård. För somatisk specialiserad öppenvård omfattas i huvudsak läkarbehandling; sedan 2024 ingår även annan personal i psykiatrisk öppenvård.</div>
+            <details><summary>Mer information</summary><div class="more">Nationellt register. Kända bortfall finns bland annat för vissa privata vårdgivare och variabler. <a target="_blank" rel="noopener" href="https://www.socialstyrelsen.se/statistik-och-data/register/patientregistret/framstallning-och-kvalitet/">Socialstyrelsen</a></div></details>
+          </article>
+
+          <article class="register-card" data-groups="missbruk overgang">
+            <h3>Läkemedelsregistret (LMED)</h3>
+            <dl><dt>Innehåller</dt><dd>Läkemedel som hämtats ut mot recept på apotek, bland annat ATC-kod och expeditionsdatum.</dd><dt>Enhet</dt><dd>Apoteksexpedition.</dd><dt>Länkas via</dt><dd>Personnummer.</dd></dl>
+            <div class="gap"><strong>Täcker inte:</strong> om patienten faktiskt tog läkemedlet, receptfritt och läkemedel som ges direkt i vården på rekvisition.</div>
+            <details><summary>Mer information</summary><div class="more">Uppdateras månadsvis. <a target="_blank" rel="noopener" href="https://www.socialstyrelsen.se/statistik-och-data/register/lakemedelsregistret/">Socialstyrelsen</a></div></details>
+          </article>
+
+          <article class="register-card" data-groups="forlossning">
+            <h3>Medicinska födelseregistret (MFR)</h3>
+            <dl><dt>Innehåller</dt><dd>Graviditeter som lett till förlossning, förlossningsklinik, graviditetslängd, förlossningssätt och mor-/barnutfall.</dd><dt>Enhet</dt><dd>Förlossning och fött barn.</dd><dt>Länkas via</dt><dd>Moderns och barnets personnummer.</dd></dl>
+            <div class="gap"><strong>Täcker inte:</strong> hur många barnmorskor eller läkare som faktiskt arbetade på kliniken under ett visst pass eller en viss timme.</div>
+            <details><summary>Mer information</summary><div class="more">Nationellt register sedan 1973 med rik information om patientsammansättning. <a target="_blank" rel="noopener" href="https://www.socialstyrelsen.se/statistik-och-data/register/medicinska-fodelseregistret/">Socialstyrelsen</a></div></details>
+          </article>
+
+          <article class="register-card" data-groups="">
+            <h3>Dödsorsaksregistret (DORS)</h3>
+            <dl><dt>Innehåller</dt><dd>Dödsdatum och dödsorsaker.</dd><dt>Enhet</dt><dd>Dödsfall.</dd><dt>Länkas via</dt><dd>Personnummer.</dd></dl>
+            <div class="gap"><strong>Täcker inte:</strong> icke-dödliga hälsoutfall och säger inget om hälsotillstånd före dödsfallet.</div>
+            <details><summary>Mer information</summary><div class="more"><a target="_blank" rel="noopener" href="https://www.socialstyrelsen.se/statistik-och-data/register/dodsorsaksregistret/">Socialstyrelsen</a></div></details>
+          </article>
+        </div>
+      </section>
+
+      <section class="source-category" data-category="scb">
+        <h2>SCB-data</h2>
+        <div class="source-cards">
+          <article class="register-card" data-groups="missbruk">
+            <h3>LISA</h3>
+            <dl><dt>Innehåller</dt><dd>Utbildning, sysselsättning, inkomster, arbetslöshet samt sjuk- och föräldraförsäkring.</dd><dt>Enhet</dt><dd>Individ × år.</dd><dt>Länkas via</dt><dd>Personnummer.</dd></dl>
+            <div class="gap"><strong>Täcker inte:</strong> arbetsvillkor, upplevd arbetsförmåga eller korta förändringar som försvinner i ett årsaggregat.</div>
+            <details><summary>Mer information</summary><div class="more">Uppdateras årligen och är komplett drygt 14 månader efter mättidpunkten. <a target="_blank" rel="noopener" href="https://www.scb.se/vara-tjanster/bestall-data-och-statistik/register/lisa/">SCB</a></div></details>
+          </article>
+
+          <article class="register-card" data-groups="missbruk overgang">
+            <h3>RTB – Registret över totalbefolkningen</h3>
+            <dl><dt>Innehåller</dt><dd>Folkbokföring och grundläggande demografi; kan användas för befolknings- och familjekopplingar.</dd><dt>Enhet</dt><dd>Individ.</dd><dt>Länkas via</dt><dd>Personnummer.</dd></dl>
+            <div class="gap"><strong>Täcker inte:</strong> faktisk boendekvalitet, upplevd trygghet eller all hemlöshet. Folkbokföringsadress är inte samma sak som stabil bostad.</div>
+            <details><summary>Mer information</summary><div class="more"><a target="_blank" rel="noopener" href="https://www.scb.se/vara-tjanster/bestall-data-och-statistik/register/">SCB:s registeröversikt</a></div></details>
+          </article>
+
+          <article class="register-card" data-groups="forlossning">
+            <h3>Yrkesregistret</h3>
+            <dl><dt>Innehåller</dt><dd>Årlig information om yrke, sysselsättningsförhållande, arbetsställets belägenhet och tjänstgöringsomfattning.</dd><dt>Enhet</dt><dd>Person/anställning med årsreferens.</dd><dt>Länkas via</dt><dd>Personnummer och arbetsställe.</dd></dl>
+            <div class="gap"><strong>Täcker inte:</strong> bemannade timmar på en viss förlossningsklinik under ett visst arbetspass.</div>
+            <details><summary>Mer information</summary><div class="more"><a target="_blank" rel="noopener" href="https://www.scb.se/vara-tjanster/bestall-data-och-statistik/register/yrkesregistret/">SCB</a></div></details>
+          </article>
+        </div>
+      </section>
+
+      <section class="source-category" data-category="social">
+        <h2>Socialtjänst</h2>
+        <div class="source-cards">
+          <article class="register-card" data-groups="">
+            <h3>LVM-registret</h3>
+            <dl><dt>Innehåller</dt><dd>Ansökan, omedelbart omhändertagande och utskrivning för personer som tvångsvårdas enligt LVM.</dd><dt>Enhet</dt><dd>Person och LVM-händelse.</dd><dt>Länkas via</dt><dd>Personnummer.</dd></dl>
+            <div class="gap"><strong>Täcker inte:</strong> frivillig kommunal missbruksvård eller hela gruppen med skadligt bruk och beroende.</div>
+            <details><summary>Mer information</summary><div class="more">Socialstyrelsen avråder från att okritiskt samköra de tre LVM-underregistren eftersom de rapporteras från olika system. <a target="_blank" rel="noopener" href="https://www.socialstyrelsen.se/statistik-och-data/register/tvangsvard-av-missbrukare/">Socialstyrelsen</a></div></details>
+          </article>
+
+          <article class="register-card" data-groups="missbruk">
+            <h3>Socialdataregister</h3>
+            <dl><dt>Innehåller</dt><dd>Ny rättslig och teknisk infrastruktur för nationella individdata om socialtjänst och LSS.</dd><dt>Enhet</dt><dd>Kommer att bero på vilka informationsmängder som införs.</dd><dt>Länkas via</dt><dd>Nationell registerstruktur när uppgifterna väl börjar samlas in.</dd></dl>
+            <div class="gap"><strong>Täcker inte ännu:</strong> behandla inte registret som om heltäckande historiska individdata redan finns. Lagen trädde i kraft 1 augusti 2026; nya regler om uppgiftsskyldighet träder i kraft 1 augusti 2027 och nya informationsmängder byggs därefter ut stegvis.</div>
+            <details><summary>Mer information</summary><div class="more">Rapportering av nya uppgifter börjar först när kommunernas dokumentation, verksamhetssystem och den tekniska plattformen är redo; tidpunkten är inte fastställd. <a target="_blank" rel="noopener" href="https://www.socialstyrelsen.se/aktuellt/ny-lag-om-socialdataregister-oppnar-for-battre-uppfoljning-i-socialtjansten/">Socialstyrelsen</a></div></details>
+          </article>
+        </div>
+      </section>
+
+      <section class="source-category" data-category="quality">
+        <h2>Kvalitetsregister</h2>
+        <div class="source-cards">
+          <article class="register-card" data-groups="">
+            <h3>Bättre Beroendevård (tidigare SBR)</h3>
+            <dl><dt>Innehåller</dt><dd>Specialiserad beroendevård, behandling och kvalitetsindikatorer för registrerade patienter.</dd><dt>Enhet</dt><dd>Registrerad patient/vårdepisod.</dd><dt>Länkas via</dt><dd>Personnummer i registermiljön.</dd></dl>
+            <div class="gap"><strong>Täcker inte:</strong> hela populationen med skadligt bruk/beroende, primärvård eller kommunal socialtjänst. Kontrollera alltid aktuell täckningsgrad innan analys.</div>
+            <details><summary>Mer information</summary><div class="more"><a target="_blank" rel="noopener" href="https://www.battreberoendevard.regionstockholm.se/">Bättre Beroendevård</a></div></details>
+          </article>
+
+          <article class="register-card" data-groups="overgang">
+            <h3>Diagnosspecifikt kvalitetsregister</h3>
+            <dl><dt>Innehåller</dt><dd>Kan ge kliniskt rik information för en viss diagnosgrupp och ibland uppföljning som saknas i PAR.</dd><dt>Enhet</dt><dd>Patient, besök eller behandlingsperiod beroende på register.</dd><dt>Länkas via</dt><dd>Vanligen personnummer i registermiljö.</dd></dl>
+            <div class="gap"><strong>Täcker inte automatiskt:</strong> alla patienter med diagnosen. Täckningsgrad, anslutna verksamheter, år och variabler varierar mellan register.</div>
+            <details><summary>Mer information</summary><div class="more">Kontrollera det specifika kvalitetsregistrets metadata och täckningsgrad innan designen låses.</div></details>
+          </article>
+        </div>
+      </section>
+
+      <section class="source-category" data-category="staff">
+        <h2>Personal och lokal administration</h2>
+        <div class="source-cards">
+          <article class="register-card" data-groups="forlossning">
+            <h3>HOSP</h3>
+            <dl><dt>Innehåller</dt><dd>Svensk legitimation och behörighet för legitimerad hälso- och sjukvårdspersonal, inklusive barnmorskor.</dd><dt>Enhet</dt><dd>Person.</dd><dt>Länkas via</dt><dd>Personnummer/samordningsnummer.</dd></dl>
+            <div class="gap"><strong>Täcker inte:</strong> var personen faktiskt arbetar en viss dag, tjänstgöringsgrad på viss klinik eller bemannade timmar per pass.</div>
+            <details><summary>Mer information</summary><div class="more"><a target="_blank" rel="noopener" href="https://www.socialstyrelsen.se/statistik-och-data/register/halso-och-sjukvardspersonal/">Socialstyrelsen</a></div></details>
+          </article>
+
+          <article class="register-card" data-groups="forlossning">
+            <h3>SKR:s regionpersonalstatistik</h3>
+            <dl><dt>Innehåller</dt><dd>Anställda och faktiska årsarbetare efter personalgrupp och region.</dd><dt>Enhet</dt><dd>Personalgrupp × region × år.</dd><dt>Länkas via</dt><dd>Region, år och personalgrupp/AID.</dd></dl>
+            <div class="gap"><strong>Täcker inte:</strong> klinik × arbetspass/timme. Regionala årsarbetare kan inte visa hur många som arbetade på en viss förlossningsklinik under belastningstoppen.</div>
+            <details><summary>Mer information</summary><div class="more">2025 års tabeller innehåller bland annat anställda och faktiska årsarbetare per personalgrupp och region. <a target="_blank" rel="noopener" href="https://skr.se/personalochkompetensforsorjning/statistikompersonalochkompetensforsorjning/personalstatistik/tabellerregionanstalldpersonal2025.9189.html">SKR</a></div></details>
+          </article>
+
+          <article class="register-card" data-groups="forlossning">
+            <h3>Regionala HR-, schema- och lönedata</h3>
+            <dl><dt>Innehåller</dt><dd>Kan ge planerade eller arbetade timmar, yrkeskategori, klinik och pass på den upplösning som bemanningsfrågan kräver.</dd><dt>Enhet</dt><dd>Person × klinik × pass/timme, beroende på lokalt system.</dd><dt>Länkas via</dt><dd>Lokala personal- och organisations-ID; kräver harmonisering.</dd></dl>
+            <div class="gap"><strong>Täcker inte nationellt:</strong> detta är normalt lokal administrativ data, inte ett färdigt rikstäckande register. Definitioner och system kan skilja sig mellan regioner.</div>
+            <details><summary>Mer information</summary><div class="more">Detta är den centrala kompletteringen om frågan kräver faktisk bemanning på klinik/pass.</div></details>
+          </article>
+        </div>
+      </section>
+
+      <section class="source-category" data-category="justice">
+        <h2>Rättsväsende</h2>
+        <div class="source-cards">
+          <article class="register-card" data-groups="missbruk">
+            <h3>Lagföringsuppgifter / Brå</h3>
+            <dl><dt>Innehåller</dt><dd>Dokumenterade lagföringsbeslut, bland annat fällande domslut i tingsrätt, godkända strafförelägganden och åtalsunderlåtelser.</dd><dt>Enhet</dt><dd>Lagföringsbeslut/person.</dd><dt>Länkas via</dt><dd>Personidentifierare i mikrodatamiljö efter prövning.</dd></dl>
+            <div class="gap"><strong>Täcker inte:</strong> allt brottsligt beteende. Ett registrerat lagföringsbeslut är ett rättsväsendemått, inte samma sak som ”kriminalitet” i bred mening.</div>
+            <details><summary>Mer information</summary><div class="more">Brå beskriver statistiken som brottslighet som kan konstateras genom lagföringsbeslut. <a target="_blank" rel="noopener" href="https://bra.se/statistik/statistik-om-rattsvasendet/personer-lagforda-for-brott/om-statistiken-over-personer-lagforda-for-brott">Brå</a></div></details>
+          </article>
+        </div>
+      </section>
+    </main>
+  </section>
+
+  <!-- GEMENSAMT ANALOGT EXEMPEL -->
+  <section id="example" class="view">
+    <main class="wrap">
+      <button class="button back-link no-print" type="button" onclick="backFromExample()">← Tillbaka</button>
+      <div class="hero">
+        <span class="eyebrow">Analogt exempel · öppna bara vid behov</span>
+        <h1>Återgång i arbete efter hjärtinfarkt</h1>
+        <p>Ett fjärde fall som visar hur ett grovt sexstegssvar kan se ut. Det är inte ett facit för någon av workshopens tre gruppuppgifter.</p>
+      </div>
+      <section class="card main-question">
+        <h2>Analysfråga</h2>
+        <p class="question">Hur utvecklas arbetsmarknadsanknytningen under två år efter en första observerbar hjärtinfarkt bland personer i arbetsför ålder?</p>
+      </section>
+      <section class="card analog">
+        <div class="six-grid">
+          <div><b>1. Fråga och population</b><span>40–64-åringar med första registrerade hjärtinfarkt i PAR efter en tidigare period utan registrerad hjärtinfarkt.</span></div>
+          <div><b>2. Exponering/startpunkt</b><span>Utskrivningsdatum från det observerade infarkttillfället.</span></div>
+          <div><b>3. Utfall</b><span>Sysselsättning, arbetsinkomst och sjukfrånvaro. Dessa mått säger inte allt om faktisk arbetsförmåga.</span></div>
+          <div><b>4. Data och analysenhet</b><span>Individ × år eller månad beroende på utfall; PAR och arbetsmarknads-/socialförsäkringsdata.</span></div>
+          <div><b>5. Jämförelse och tolkning</b><span>För att beskriva utvecklingen räcker longitudinell uppföljning. För en effektfråga behövs en separat jämförelsedesign.</span></div>
+          <div><b>6. Datagap</b><span>Arbetsgivarens anpassningar, motivation, upplevd arbetsförmåga och delar av rehabiliteringen syns inte.</span></div>
+        </div>
+      </section>
+    </main>
+  </section>
+
+  <!-- GRUPP 1 -->
+  <section id="missbruk" class="view group1">
+    <div class="utility no-print"><div class="wrap" style="padding-top:0;padding-bottom:0"><div class="utility-inner">
+      <button class="button quiet" type="button" onclick="showHome()">← Startsidan</button>
+      <a class="button" href="#arbetsyta-missbruk">Till uppgiften</a>
+      <button class="button" type="button" onclick="openReference('missbruk','missbruk')">Register-fusklapp</button>
+      <button class="button" type="button" onclick="copyGroupLink('missbruk')">Kopiera länk</button>
+      <button class="button" type="button" onclick="printPage()">Skriv ut uppgiften</button>
+    </div></div></div>
+    <main class="wrap">
+      <header class="group-head"><small>Grupp 1</small><h1>Missar vi målen med missbruks- och beroendevården?</h1><p>Kärnlektion: patientviktiga resultat är inte samma sak som de registervariabler vi råkar kunna observera.</p></header>
+
+      <section class="card main-question">
+        <h2>Huvudfråga</h2>
+        <p class="question">Hur utvecklas två patientviktiga resultat över tid efter en persons <strong>första observerbara kontakt i de datakällor ni valt</strong> – och vilket viktigt resultat kan ni inte mäta tillräckligt bra i nationella register?</p>
+      </section>
+
+      <section class="card core-lesson">
+        <strong>Viktigt:</strong> ”första observerbara kontakt” är inte nödvändigtvis personens första verkliga kontakt med missbruks- och beroendevården. Exempelvis saknar PAR primärvård, och kommunala individdata har historiskt varit ofullständiga nationellt.
+      </section>
+
+      <section class="card">
+        <span class="pill">Bestäm ambitionsnivå</span>
+        <h2>Vad vill ni kunna säga?</h2>
+        <div class="claim-grid">
+          <div class="claim"><b>A. Beskriva</b><p>Hur utvecklas resultaten efter den observerbara kontakten? Detta räcker för huvuduppgiften.</p></div>
+          <div class="claim"><b>B. Förklara samband</b><p>Vilka faktorer samvarierar med bättre eller sämre utveckling?</p></div>
+          <div class="claim"><b>C. Uttala sig om effekt</b><p>Vad hade hänt utan en viss insats eller reform? Då krävs en trovärdig jämförelse.</p></div>
+        </div>
+        <p class="claim-note">Ni behöver inte göra uppgiften kausal. Välj nivå först.</p>
+      </section>
+
+      <section class="card deliverable">
+        <span class="pill">Er leverans</span>
+        <h2>När tiden är slut ska ni kunna fylla i sex rader</h2>
+        <div class="answer-template">
+          <div class="answer-row"><b>Population:</b><span>…</span></div>
+          <div class="answer-row"><b>Startpunkt/exponering:</b><span>…</span></div>
+          <div class="answer-row"><b>Utfall:</b><span>…</span></div>
+          <div class="answer-row"><b>Data + analysenhet:</b><span>…</span></div>
+          <div class="answer-row"><b>Jämförelse/tolkning:</b><span>…</span></div>
+          <div class="answer-row"><b>Största datagap:</b><span>…</span></div>
+        </div>
+        <h3>3-minutersredovisning</h3>
+        <div class="presentation-plan"><div><b>20 sek</b><span>Vår analysfråga</span></div><div><b>ca 2 min</b><span>Så skulle vi göra</span></div><div><b>40 sek</b><span>Det största problemet med designen</span></div></div>
+      </section>
+
+      <section id="arbetsyta-missbruk" class="card">
+        <span class="pill">Arbetsyta</span>
+        <h2>Arbeta igenom sex steg</h2>
+        <div class="workrule">Få ett grovt svar på alla sex steg innan ni finslipar något enskilt.</div>
+        <ol class="steps">
+          <li class="step"><span class="stepnum">Steg 1</span><h3>Fråga och population</h3><p class="prompt">Välj <strong>en</strong> kohortdefinition. Vilka personer gäller frågan och vilka missar definitionen?</p></li>
+          <li class="step"><span class="stepnum">Steg 2</span><h3>Exponering/startpunkt</h3><p class="prompt">Definiera första <strong>observerbara</strong> kontakt i era valda data. Vilken verklig kontakt kan ha skett tidigare utan att synas?</p></li>
+          <li class="step"><span class="stepnum">Steg 3</span><h3>Utfall</h3><p class="prompt">Välj exakt <strong>två</strong> patientviktiga resultat som kan mätas rimligt väl och <strong>ett</strong> viktigt resultat som inte kan mätas tillräckligt bra.</p>
+            <table class="construct"><thead><tr><th>Patientviktigt begrepp</th><th>Registermått/proxy</th><th>Vad går förlorat?</th></tr></thead><tbody><tr><td class="blank">Mätbart resultat 1</td><td class="blank">…</td><td class="blank">…</td></tr><tr><td class="blank">Mätbart resultat 2</td><td class="blank">…</td><td class="blank">…</td></tr><tr><td class="blank">Viktigt men otillräckligt mätbart</td><td class="blank">?</td><td class="blank">Varför?</td></tr></tbody></table>
+          </li>
+          <li class="step"><span class="stepnum">Steg 4</span><h3>Data och analysenhet</h3><p class="prompt">Vilka register eller administrativa data behöver länkas? Är analysen individ × år, individ × månad eller något annat?</p></li>
+          <li class="step"><span class="stepnum">Steg 5</span><h3>Jämförelse och tolkning</h3><p class="prompt">Är ert upplägg beskrivande, associativt eller kausalt? En kontrollgrupp behövs inte bara för att analysen är registerbaserad.</p><div class="emphasis">Om ni vill uttala er om effekt måste ni kunna förklara vad jämförelsen representerar och varför grupperna är jämförbara.</div></li>
+          <li class="step"><span class="stepnum">Steg 6</span><h3>Datagap</h3><p class="prompt">Vad är fortfarande viktigt men osynligt? Vilken extra datakälla – enkät, journalgranskning, kommunala individdata eller annat – skulle behövas?</p></li>
+        </ol>
+      </section>
+
+      <section class="card hint-stack">
+        <span class="pill">Fastnat?</span><h2>Ledtrådar – öppna en i taget</h2>
+        <details><summary><span class="hint-level">Ledtråd 1 · liten knuff</span><br>Vad är egentligen er population?</summary><div class="hint-body"><p>En diagnos i PAR, ett läkemedelsuttag och en kommunal insats identifierar olika delar av målgruppen. Fråga först: <strong>vilken grupp kan vi faktiskt se?</strong></p></div></details>
+        <details><summary><span class="hint-level">Ledtråd 2 · mer hjälp</span><br>Mät begreppet – inte bara det som råkar finnas</summary><div class="hint-body"><p>Exempel: <strong>hälsa → specialistvård/läkemedel</strong>. Det är observerbart, men vårdkonsumtion är inte samma sak som hälsa. <strong>Arbete → årsinkomst/sysselsättning</strong>, men det säger lite om arbetskvalitet.</p><p>Definierar ni kohorten via PAR missar ni dessutom personer som bara nått primärvård eller kommunal socialtjänst.</p></div></details>
+        <details><summary><span class="hint-level">Ledtråd 3 · nästan där</span><br>Om ni vill gå från beskrivning till effekt</summary><div class="hint-body"><p>Om ni bara vill beskriva utvecklingen behövs ingen kontrollgrupp. Om ni däremot vill säga att en insats eller reform <em>orsakade</em> utvecklingen behövs en jämförelse som approximera vad som annars hade hänt.</p><p>De som får en insats kan skilja sig från dem som inte får den på sätt som också påverkar utfallet – till exempel svårare problem eller mer kontakt med systemet. Detta kallas ofta <em>confounding by indication</em>.</p><p>En daterad reform kan ibland skapa en användbar brytpunkt, men en ren före/efter-jämförelse bland bara dem som fått vård räcker inte för en effektanalys.</p></div></details>
+      </section>
+
+      <details class="compact-details analog-link">
+        <summary>Behöver ni mer hjälp? Öppna analogt exempel</summary>
+        <div class="details-body"><p>Öppna bara om gruppen behöver stöd med formen på ett färdigt sexstegssvar.</p><button class="button" type="button" onclick="openExample('missbruk')">Öppna exemplet</button></div>
+      </details>
+
+      <details class="compact-details background">
+        <summary>Bakgrund och rapport</summary>
+        <div class="details-body"><p>Vårdanalys initierade studien tillsammans med myndighetens patient- och brukarråd. Studien kartlade vilka resultat – från vårdkonsumtion till hälsa, försörjning, arbete, boende och relationer – som är viktiga för personer i missbruks- och beroendevården, och konstaterade att det saknas en gemensam struktur för att följa upp dem.</p><p><a target="_blank" rel="noopener" href="https://www.vardanalys.se/rapporter/missar-vi-malen-med-missbruks-och-beroendevarden/">Öppna rapport 2016:2</a></p></div>
+      </details>
+    </main>
+  </section>
+
+  <!-- GRUPP 2 -->
+  <section id="forlossning" class="view group2">
+    <div class="utility no-print"><div class="wrap" style="padding-top:0;padding-bottom:0"><div class="utility-inner">
+      <button class="button quiet" type="button" onclick="showHome()">← Startsidan</button>
+      <a class="button" href="#arbetsyta-forlossning">Till uppgiften</a>
+      <button class="button" type="button" onclick="openReference('forlossning','forlossning')">Register-fusklapp</button>
+      <button class="button" type="button" onclick="copyGroupLink('forlossning')">Kopiera länk</button>
+      <button class="button" type="button" onclick="printPage()">Skriv ut uppgiften</button>
+    </div></div></div>
+    <main class="wrap">
+      <header class="group-head"><small>Grupp 2</small><h1>I tid och otid</h1><p>Kärnlektion: rätt analysenhet och tidsupplösning avgör om den viktigaste variabeln ens finns.</p></header>
+
+      <section class="card main-question">
+        <h2>Huvudfråga</h2>
+        <p class="question">Hur varierar belastningen på svenska förlossningskliniker över tid, hur hänger den samman med bemanning och produktivitet – och var tar de nationella data slut?</p>
+      </section>
+
+      <section class="card special-box">
+        <strong>En bra registerstudie börjar ibland med slutsatsen att frågan inte kan besvaras med registerdata.</strong>
+        <p>Födelsesidan är nationellt rik. Bemanning på klinik × pass/timme är det oftast inte. Att exakt ringa in datagapet är här en central del av leveransen.</p>
+      </section>
+
+      <section class="card">
+        <span class="pill">Bestäm ambitionsnivå</span>
+        <h2>Vad vill ni kunna säga?</h2>
+        <div class="claim-grid">
+          <div class="claim"><b>A. Beskriva</b><p>Hur varierar patientinflöde, bemanning eller produktivitet över tid?</p></div>
+          <div class="claim"><b>B. Förklara samband</b><p>Hur samvarierar belastning med bemanning och produktivitet?</p></div>
+          <div class="claim"><b>C. Uttala sig om effekt</b><p>Orsakar hög belastning ett visst utfall? Det kräver en starkare jämförelsedesign.</p></div>
+        </div>
+        <p class="claim-note">Huvuduppgiften är främst en genomförbarhets- och sambandsfråga. Ni behöver inte skapa en kausal design.</p>
+      </section>
+
+      <section class="card deliverable">
+        <span class="pill">Er leverans</span>
+        <h2>När tiden är slut ska ni kunna fylla i sex rader</h2>
+        <div class="answer-template">
+          <div class="answer-row"><b>Population:</b><span>…</span></div>
+          <div class="answer-row"><b>Startpunkt/exponering:</b><span>…</span></div>
+          <div class="answer-row"><b>Utfall:</b><span>…</span></div>
+          <div class="answer-row"><b>Data + analysenhet:</b><span>…</span></div>
+          <div class="answer-row"><b>Jämförelse/tolkning:</b><span>…</span></div>
+          <div class="answer-row"><b>Största datagap:</b><span>…</span></div>
+        </div>
+        <h3>3-minutersredovisning</h3>
+        <div class="presentation-plan"><div><b>20 sek</b><span>Vår analysfråga</span></div><div><b>ca 2 min</b><span>Så skulle vi göra</span></div><div><b>40 sek</b><span>Det största problemet med designen</span></div></div>
+      </section>
+
+      <section id="arbetsyta-forlossning" class="card">
+        <span class="pill">Arbetsyta</span>
+        <h2>Arbeta igenom sex steg</h2>
+        <div class="workrule">Få ett grovt svar på alla sex steg innan ni finslipar något enskilt.</div>
+        <ol class="steps">
+          <li class="step"><span class="stepnum">Steg 1</span><h3>Fråga och population</h3><p class="prompt">Vilka kliniker och förlossningar ska analysen omfatta? Behöver ni avgränsa bort planerade förlossningar eller vissa kliniktyper?</p></li>
+          <li class="step"><span class="stepnum">Steg 2</span><h3>Exponering/startpunkt</h3><p class="prompt">Hur definierar ni ”belastning”? Antal förlossningar per timme, samtidiga patienter, födslar per pass eller något annat?</p><div class="emphasis">Belastning är ofta ett tim- eller passfenomen. En för grov enhet, till exempel klinik × månad, kan jämna ut just de toppar ni vill studera.</div></li>
+          <li class="step"><span class="stepnum">Steg 3</span><h3>Utfall</h3><p class="prompt">Definiera bemanning och produktivitet. Vad betyder ett högt produktivitetsvärde? Är det nödvändigtvis bra?</p></li>
+          <li class="step"><span class="stepnum">Steg 4</span><h3>Data och analysenhet</h3><p class="prompt">Vilka data finns nationellt på rätt nivå och vilka kräver lokal insamling? Kan patientflöde och bemanning mätas på samma tidsnivå?</p></li>
+          <li class="step"><span class="stepnum">Steg 5</span><h3>Jämförelse och tolkning</h3><p class="prompt">Jämför ni kliniker med varandra eller samma klinik vid olika tider? Kom ihåg att bemanning planeras utifrån förväntad belastning, vilket gör sambandet svårare att tolka.</p></li>
+          <li class="step"><span class="stepnum">Steg 6</span><h3>Datagap</h3><p class="prompt">Vilken del av frågan kan inte besvaras nationellt på den upplösning som krävs? Vad måste i så fall samlas in lokalt?</p></li>
+        </ol>
+      </section>
+
+      <section class="card hint-stack">
+        <span class="pill">Fastnat?</span><h2>Ledtrådar – öppna en i taget</h2>
+        <details><summary><span class="hint-level">Ledtråd 1 · liten knuff</span><br>Vilken analysenhet matchar fenomenet?</summary><div class="hint-body"><p>Om belastningstoppen varar två timmar men ni analyserar klinik × månad kan fenomenet försvinna i aggregatet. Bestäm först vilken tids- och organisationsnivå frågan egentligen kräver.</p></div></details>
+        <details><summary><span class="hint-level">Ledtråd 2 · mer hjälp</span><br>Patientinflöde är inte bemanning</summary><div class="hint-body"><p>MFR ger nationell information om förlossningar och patientsammansättning, men inte hur många barnmorskor som var i tjänst på en viss klinik ett visst pass. HOSP visar behörighet; SKR och SCB kan ge grövre personaldata. Fråga er: <strong>finns bemanningsvariabeln på rätt nivå?</strong></p></div></details>
+        <details><summary><span class="hint-level">Ledtråd 3 · nästan där</span><br>Vad skulle en genomförbar design faktiskt kräva?</summary><div class="hint-body"><p>En möjlig slutsats är att nationella patientdata måste kombineras med harmoniserade regionala HR-/schema-/lönedata. Utan sådan insamling kan ni beskriva patientflödet bättre än bemanningen.</p><p>Var också försiktiga med tolkningen: fler förlossningar per bemannad barnmorsketimme kan betyda effektivitet, men också underbemanning. Och eftersom scheman sätts utifrån förväntad belastning bestäms bemanning och belastning delvis tillsammans.</p></div></details>
+      </section>
+
+      <details class="compact-details analog-link">
+        <summary>Behöver ni mer hjälp? Öppna analogt exempel</summary>
+        <div class="details-body"><p>Öppna bara om gruppen behöver stöd med formen på ett färdigt sexstegssvar.</p><button class="button" type="button" onclick="openExample('forlossning')">Öppna exemplet</button></div>
+      </details>
+
+      <details class="compact-details background">
+        <summary>Bakgrund och rapport</summary>
+        <div class="details-body"><p><strong>Regeringsuppdrag (regeringsbeslut I:9, 17 juni 2021):</strong> sammanställa och analysera kvinnors hälsa och förlossningsvården 2015–2022. Fördjupningsstudien <em>I tid och otid</em> studerade bland annat belastning, bemanning, arbetstid och produktivitet vid tio förlossningskliniker.</p><p><a target="_blank" rel="noopener" href="https://www.vardanalys.se/rapporter/i-tid-och-otid/">Öppna rapport 2023:5</a></p></div>
+      </details>
+    </main>
+  </section>
+
+  <!-- GRUPP 3 -->
+  <section id="overgang" class="view group3">
+    <div class="utility no-print"><div class="wrap" style="padding-top:0;padding-bottom:0"><div class="utility-inner">
+      <button class="button quiet" type="button" onclick="showHome()">← Startsidan</button>
+      <a class="button" href="#arbetsyta-overgang">Till uppgiften</a>
+      <button class="button" type="button" onclick="openReference('overgang','overgang')">Register-fusklapp</button>
+      <button class="button" type="button" onclick="copyGroupLink('overgang')">Kopiera länk</button>
+      <button class="button" type="button" onclick="printPage()">Skriv ut uppgiften</button>
+    </div></div></div>
+    <main class="wrap">
+      <header class="group-head"><small>Grupp 3</small><h1>Förberedd och sedd</h1><p>Kärnlektion: en vårdövergång är en process, inte automatiskt ett datum som redan finns i ett register.</p></header>
+
+      <section class="card main-question">
+        <h2>Huvudfråga</h2>
+        <p class="question">För en vald diagnosgrupp där regelbunden uppföljning normalt förväntas: hur ser kontinuiteten ut när unga går från barn- till vuxensjukvård, och vilka patienter får störst vårdglapp?</p>
+      </section>
+
+      <section class="card core-lesson">
+        <strong>Första beslutet är kliniskt:</strong> välj en diagnosgrupp. Ett glapp på 12 månader betyder något helt annat om patienten normalt följs var tredje månad än om uppföljning förväntas en gång per år.
+      </section>
+
+      <section class="card">
+        <span class="pill">Bestäm ambitionsnivå</span>
+        <h2>Vad vill ni kunna säga?</h2>
+        <div class="claim-grid">
+          <div class="claim"><b>A. Beskriva</b><p>Hur vanliga är vårdglapp, när uppstår de och vilka grupper har störst glapp?</p></div>
+          <div class="claim"><b>B. Förklara samband</b><p>Vilka patient-, diagnos- eller regionsfaktorer samvarierar med glapp?</p></div>
+          <div class="claim"><b>C. Uttala sig om effekt</b><p>Orsakar själva övergången ett sämre utfall? Då måste vanlig åldersutveckling skiljas från övergångseffekten.</p></div>
+        </div>
+        <p class="claim-note">Bestäm om ni beskriver vårdglapp eller försöker estimera en effekt av övergången. Det är två olika uppgifter.</p>
+      </section>
+
+      <section class="card deliverable">
+        <span class="pill">Er leverans</span>
+        <h2>När tiden är slut ska ni kunna fylla i sex rader</h2>
+        <div class="answer-template">
+          <div class="answer-row"><b>Population:</b><span>…</span></div>
+          <div class="answer-row"><b>Startpunkt/exponering:</b><span>…</span></div>
+          <div class="answer-row"><b>Utfall:</b><span>…</span></div>
+          <div class="answer-row"><b>Data + analysenhet:</b><span>…</span></div>
+          <div class="answer-row"><b>Jämförelse/tolkning:</b><span>…</span></div>
+          <div class="answer-row"><b>Största datagap:</b><span>…</span></div>
+        </div>
+        <h3>3-minutersredovisning</h3>
+        <div class="presentation-plan"><div><b>20 sek</b><span>Vår analysfråga</span></div><div><b>ca 2 min</b><span>Så skulle vi göra</span></div><div><b>40 sek</b><span>Det största problemet med designen</span></div></div>
+      </section>
+
+      <section id="arbetsyta-overgang" class="card">
+        <span class="pill">Arbetsyta</span>
+        <h2>Arbeta igenom sex steg</h2>
+        <div class="workrule">Få ett grovt svar på alla sex steg innan ni finslipar något enskilt.</div>
+        <ol class="steps">
+          <li class="step"><span class="stepnum">Steg 1</span><h3>Fråga och population</h3><p class="prompt">Välj <strong>en kliniskt sammanhållen diagnosgrupp</strong> där regelbunden uppföljning normalt förväntas. Hur ofta brukar gruppen behöva följas?</p></li>
+          <li class="step"><span class="stepnum">Steg 2</span><h3>Exponering/startpunkt</h3><p class="prompt">Hur operationaliserar ni övergången? 18-årsdagen, sista barnspecialistkontakt, första vuxenspecialistkontakt eller ett intervall mellan dem?</p></li>
+          <li class="step"><span class="stepnum">Steg 3</span><h3>Utfall</h3><p class="prompt">Välj ett mått på vårdglapp och gärna en konsekvens. Vilket mått motsvarar fenomenet bäst?</p><div class="emphasis">Möjliga operationaliseringar: tid till första vuxenvårdskontakt; ingen specialistkontakt inom X månader; oväntat långt intervall relativt patientens tidigare vårdfrekvens; läkemedelsavbrott; akut inläggning under övergångsperioden.</div></li>
+          <li class="step"><span class="stepnum">Steg 4</span><h3>Data och analysenhet</h3><p class="prompt">Vilka register krävs och vad är analysenheten – individ, vårdkontakt eller individ × månad? Vilka vårdkontakter saknas i nationella data?</p></li>
+          <li class="step"><span class="stepnum">Steg 5</span><h3>Jämförelse och tolkning</h3><p class="prompt">Beskriver ni glapp eller vill ni säga något om effekten av övergången? Om det senare: hur skiljer ni övergången från sådant som ändå förändras när unga blir äldre?</p></li>
+          <li class="step"><span class="stepnum">Steg 6</span><h3>Datagap</h3><p class="prompt">Vad betyder frånvaro av registrerad specialistkontakt? Kan patienten ha fått primärvård, egenvård eller vård som inte syns i era data? Vilken extra information skulle lösa problemet?</p></li>
+        </ol>
+      </section>
+
+      <section class="card hint-stack">
+        <span class="pill">Fastnat?</span><h2>Ledtrådar – öppna en i taget</h2>
+        <details><summary><span class="hint-level">Ledtråd 1 · liten knuff</span><br>Välj diagnos innan ni väljer glappgräns</summary><div class="hint-body"><p>Fråga vad normal uppföljning ser ut som för diagnosgruppen. Ett ”glapp” måste bedömas mot vad som normalt förväntas.</p></div></details>
+        <details><summary><span class="hint-level">Ledtråd 2 · mer hjälp</span><br>18-årsdagen är inte automatiskt övergången</summary><div class="hint-body"><p>Överföringen kan ske före eller efter 18 år. Ni kan i stället använda sista barnspecialistkontakt och första vuxenspecialistkontakt – men vad gör ni med patienter som aldrig dyker upp i vuxenvården?</p><p>Överväg också ett relativt mått: är intervallet efter övergången mycket längre än patientens egna intervall före övergången?</p></div></details>
+        <details><summary><span class="hint-level">Ledtråd 3 · nästan där</span><br>Välj vad frånvaro av kontakt ska betyda</summary><div class="hint-body"><p>Ett glapp kan operationaliseras som exempelvis ingen specialistkontakt inom X månader, förlängt intervall relativt tidigare vårdfrekvens, läkemedelsavbrott eller akutvård under övergången.</p><p>Men frånvaro i PAR kan också betyda att patienten fått primärvård eller annan vård som inte syns. Och om ni vill uttala er om en <em>effekt</em> av övergången räcker inte en ren före/efter-kurva runt 18 års ålder.</p></div></details>
+      </section>
+
+      <details class="compact-details analog-link">
+        <summary>Behöver ni mer hjälp? Öppna analogt exempel</summary>
+        <div class="details-body"><p>Öppna bara om gruppen behöver stöd med formen på ett färdigt sexstegssvar.</p><button class="button" type="button" onclick="openExample('overgang')">Öppna exemplet</button></div>
+      </details>
+
+      <details class="compact-details background">
+        <summary>Bakgrund och rapport</summary>
+        <div class="details-body"><p>Vårdanalys initierade utredningen i nära samverkan med patient- och brukarrådet. Studien belyste forskning, erfarenheter hos unga, närstående och vårdpersonal samt åtgärder som kan förbättra övergången. Rapporten efterlyste också bättre nationell uppföljning och utvärdering.</p><p><a target="_blank" rel="noopener" href="https://www.vardanalys.se/rapporter/forberedd-och-sedd/">Öppna rapport 2019:6</a></p></div>
+      </details>
+    </main>
+  </section>
+
+  <!-- WORKSHOPLEDARE -->
+  <section id="facilitator" class="view">
+    <main class="wrap">
+      <button class="button back-link no-print" type="button" onclick="showHome()">← Till deltagarsidan</button>
+      <div class="hero"><span class="eyebrow">Workshopledare</span><h1>Ledarmaterial</h1><p>Tidsplan, QR-koder, interventionspunkter och frågor att lyssna efter. Deltagarna behöver inte se denna vy.</p></div>
+
+      <section class="card">
+        <span class="pill">Tidsplan</span><h2>45 minuter</h2>
+        <div class="timeline">
+          <div><b>0–5 min</b><span>Läs frågan och välj ambitionsnivå.</span></div>
+          <div><b>5–30 min</b><span>Designa. Grovt svar på alla sex steg först.</span></div>
+          <div><b>30–36 min</b><span>Fyll i sex rader och förbered 3 minuter.</span></div>
+          <div><b>36–45 min</b><span>Tre presentationer à 3 minuter.</span></div>
+        </div>
+        <p><strong>Gruppsammansättning:</strong> blanda gärna register/epidemiologi, kvantitativ metod/ekonomi samt utredning/klinik/socialvetenskap. Grupp 2 behöver dock särskilt hjälp av fusklappen eftersom bemanningsinputen ligger utanför de nationella hälsodataregistren.</p>
+      </section>
+
+      <section class="card">
+        <span class="pill">QR-koder och direktlänkar</span><h2>Skicka varje grupp direkt till rätt uppgift</h2>
+        <div class="qr-grid">
+          <div class="qr-card"><h3>Grupp 1</h3><div class="qr-box" data-qr-group="missbruk"></div><div class="direct-url" data-url-group="missbruk"></div><button class="button small" type="button" onclick="copyGroupLink('missbruk')">Kopiera länk</button></div>
+          <div class="qr-card"><h3>Grupp 2</h3><div class="qr-box" data-qr-group="forlossning"></div><div class="direct-url" data-url-group="forlossning"></div><button class="button small" type="button" onclick="copyGroupLink('forlossning')">Kopiera länk</button></div>
+          <div class="qr-card"><h3>Grupp 3</h3><div class="qr-box" data-qr-group="overgang"></div><div class="direct-url" data-url-group="overgang"></div><button class="button small" type="button" onclick="copyGroupLink('overgang')">Kopiera länk</button></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <span class="pill">Interventioner</span><h2>Vad du gör vid 5, 30 och 36 minuter</h2>
+        <div class="facilitator-grid">
+          <div><h3>Efter 5 min</h3><p>Säg: ”Bestäm först vad ni vill kunna säga: beskriva, samband eller effekt. Få sedan ett grovt svar på alla sex steg.”</p></div>
+          <div><h3>Efter 30 min</h3><p>Stoppa fördjupningen. Be grupperna fylla i de sex leveransraderna och välja sitt största datagap.</p></div>
+          <div><h3>Efter 36 min</h3><p>Starta presentationerna. Håll 20 sek fråga, cirka 2 min upplägg, 40 sek största problem.</p></div>
+          <div><h3>Om en grupp kör fast</h3><p>Hänvisa först till ledtråd 1, sedan till gruppfiltrerad registerreferens. Det analoga exemplet är sista stödet, inte första.</p></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <span class="pill">Lyssna efter</span><h2>Viktiga resonemang i varje grupp</h2>
+        <div class="listen-grid">
+          <div><h3>Grupp 1</h3><ul><li>första observerbara ≠ första verkliga kontakt</li><li>begrepp → proxy → vad går förlorat</li><li>två mätbara + ett viktigt omätbart utfall</li><li>Brå-mått ≠ all kriminalitet</li><li>kausal design bara om de faktiskt vill säga effekt</li></ul></div>
+          <div><h3>Grupp 2</h3><ul><li>analysenhet som matchar tim-/passfenomen</li><li>patientdata nationellt, bemanning grövre</li><li>lokala HR-/schemadata behövs för kärnfrågan</li><li>hög produktivitet är inte självklart bra</li><li>bemanning planeras utifrån förväntad belastning</li></ul></div>
+          <div><h3>Grupp 3</h3><ul><li>en kliniskt sammanhållen diagnosgrupp</li><li>förväntad uppföljningsfrekvens före glappgräns</li><li>övergång ≠ automatiskt 18-årsdag</li><li>frånvaro av specialistkontakt har flera tolkningar</li><li>beskrivning av glapp ≠ effekt av övergången</li></ul></div>
+        </div>
+      </section>
+
+      <section class="card debrief">
+        <span class="pill">Gemensam debrief</span><h2>Vad lärde de tre fallen oss?</h2>
+        <ol><li>Var hade vi bra nationella data?</li><li>Var var operationaliseringen svårare än vi först trodde?</li><li>Var saknades den viktigaste variabeln helt?</li><li>När kunde vi beskriva något men inte uttala oss om effekt?</li></ol>
+        <details class="compact-details"><summary>Visa slutpoängen</summary><div class="details-body"><p class="takeaway">Registerdata är starkast när frågan, populationen, tidslinjen och mätningen passar det som faktiskt registreras. Mer data kompenserar inte för att fel fenomen mäts.</p></div></details>
+      </section>
+    </main>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
