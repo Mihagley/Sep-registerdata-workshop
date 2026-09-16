@@ -122,6 +122,76 @@ function buildQRCodes() {
   });
 }
 
+function addWorkshopEnhancements() {
+  // Den tidigare "Gemensam princip" konkurrerade visuellt med själva arbetsgången.
+  const principle = document.querySelector('#landing .principle');
+  if (principle) principle.hidden = true;
+
+  // Bakgrund och rapport ska möta deltagaren innan huvudfrågan.
+  ['missbruk', 'forlossning', 'overgang'].forEach(key => {
+    const section = document.getElementById(key);
+    const header = section?.querySelector('.group-head');
+    const background = section?.querySelector('details.background');
+    if (header && background) {
+      header.insertAdjacentElement('afterend', background);
+      background.open = true;
+    }
+  });
+
+  // Gör leveransrutorna skrivbara och spara lokalt i deltagarens webbläsare.
+  document.querySelectorAll('.deliverable .answer-row').forEach((row, index) => {
+    const old = row.querySelector('span');
+    if (!old || row.querySelector('textarea')) return;
+    const group = row.closest('.view')?.id || 'workshop';
+    const label = (row.querySelector('b')?.textContent || `Svar ${index + 1}`).replace(':', '').trim();
+    const key = `registerworkshop:${group}:${label}`;
+    const textarea = document.createElement('textarea');
+    textarea.className = 'answer-input';
+    textarea.rows = 3;
+    textarea.placeholder = 'Skriv ert svar här…';
+    textarea.setAttribute('aria-label', label);
+    try { textarea.value = localStorage.getItem(key) || ''; } catch (e) {}
+    textarea.addEventListener('input', () => {
+      try { localStorage.setItem(key, textarea.value); } catch (e) {}
+    });
+    old.replaceWith(textarea);
+  });
+
+  // Lägg till Företagsregistret/arbetsställen i referensen.
+  const scbCards = document.querySelector('.source-category[data-category="scb"] .source-cards');
+  if (scbCards && !document.getElementById('foretagsregistret-card')) {
+    const article = document.createElement('article');
+    article.className = 'register-card';
+    article.id = 'foretagsregistret-card';
+    article.dataset.groups = 'forlossning';
+    article.innerHTML = `
+      <h3>Företagsregistret / arbetsställen</h3>
+      <dl>
+        <dt>Innehåller</dt><dd>Företag och deras arbetsställen, bland annat adress, bransch och arbetsställeidentitet.</dd>
+        <dt>Enhet</dt><dd>Företag eller arbetsställe.</dd>
+        <dt>Länkas via</dt><dd>Organisationsnummer samt arbetsställenummer/CFAR-nummer. CFAR är SCB:s identitet för ett arbetsställe.</dd>
+      </dl>
+      <div class="gap"><strong>Täcker inte:</strong> vilka individer som faktiskt arbetade ett visst pass eller bemannade timmar på kliniken. Person–arbetsställe kräver andra arbetsmarknads-/arbetsgivardata och passnivå kräver lokala schema-/HR-data.</div>
+      <details><summary>Mer information</summary><div class="more">Ett företag kan ha flera arbetsställen. Arbetsgivare med minst två arbetsställen redovisar arbetsställenummer i arbetsgivardeklaration på individnivå, vilket kan ge en väg till arbetsplatskoppling i relevant mikrodatamiljö. <a target="_blank" rel="noopener" href="https://www.scb.se/vara-tjanster/bestall-data-och-statistik/foretagsregistret/vanliga-fragor/">SCB om arbetsställen</a> · <a target="_blank" rel="noopener" href="https://www.scb.se/vara-tjanster/bestall-data-och-statistik/foretagsregistret/arbetsstallenummer-i-arbetsgivardeklaration-pa-individniva/">SCB om arbetsställenummer i AGI</a></div></details>`;
+    scbCards.appendChild(article);
+  }
+
+  // Kompletterande styling hålls här för att ändringen ska vara självbärande.
+  if (!document.getElementById('workshop-enhancement-styles')) {
+    const style = document.createElement('style');
+    style.id = 'workshop-enhancement-styles';
+    style.textContent = `
+      .answer-row{display:flex;flex-direction:column;gap:7px;min-height:125px}
+      .answer-input{width:100%;min-height:82px;resize:vertical;border:1px solid #c8d1d5;border-radius:7px;padding:9px 10px;background:#fff;font:inherit;line-height:1.4;color:var(--ink)}
+      .answer-input:focus{outline:3px solid var(--focus);outline-offset:1px;border-color:transparent}
+      .background[open]{background:#f8fafb;border-left:4px solid #aebbc1}
+      .background[open] summary{border-bottom:1px solid var(--line)}
+      @media print{.answer-input{border:1px solid #777;min-height:68px;overflow:visible;white-space:pre-wrap}}
+    `;
+    document.head.appendChild(style);
+  }
+}
+
 function render() {
   const params = new URLSearchParams(location.search);
   const group = params.get('uppgift');
@@ -167,6 +237,7 @@ function render() {
 
 window.addEventListener('popstate', render);
 window.addEventListener('DOMContentLoaded', () => {
+  addWorkshopEnhancements();
   document.querySelectorAll('[data-filter]').forEach(btn => {
     btn.addEventListener('click', () => setReferenceFilter(btn.dataset.filter));
   });
