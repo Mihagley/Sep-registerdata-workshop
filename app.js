@@ -58,7 +58,7 @@ function setStatus(message) {
   el.textContent = message;
   el.hidden = false;
   clearTimeout(window.__statusTimer);
-  window.__statusTimer = setTimeout(() => { el.hidden = true; }, 1600);
+  window.__statusTimer = window.setTimeout(() => { el.hidden = true; }, 1600);
 }
 
 async function copyText(text, successMessage = 'Länken är kopierad') {
@@ -122,6 +122,17 @@ function buildQRCodes() {
   });
 }
 
+function replaceVisibleText(oldText, newText) {
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  const nodes = [];
+  while (walker.nextNode()) nodes.push(walker.currentNode);
+  nodes.forEach(node => {
+    if (node.nodeValue.includes(oldText)) {
+      node.nodeValue = node.nodeValue.replaceAll(oldText, newText);
+    }
+  });
+}
+
 function addWorkshopEnhancements() {
   // Den tidigare "Gemensam princip" konkurrerade visuellt med själva arbetsgången.
   const principle = document.querySelector('#landing .principle');
@@ -156,6 +167,11 @@ function addWorkshopEnhancements() {
     });
     old.replaceWith(textarea);
   });
+
+  // Avsluta redovisningen med reflektion i stället för problemfokus.
+  replaceVisibleText('Det största problemet med designen', 'Reflektion: vad lärde vi oss av uppgiften?');
+  replaceVisibleText('40 sek största problem', '40 sek reflektion om uppgiften');
+  replaceVisibleText('40 sek största problem.', '40 sek reflektion om uppgiften.');
 
   // Lägg till Företagsregistret/arbetsställen i referensen.
   const scbCards = document.querySelector('.source-category[data-category="scb"] .source-cards');
