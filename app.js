@@ -33,7 +33,7 @@ function navigate(params = {}) {
   });
   history.pushState({}, '', u.pathname + u.search + u.hash);
   render();
-  window.scrollTo({ top: 0, behavior: 'instant' });
+  window.scrollTo({ top: 0, behavior: 'auto' });
 }
 
 function showHome() { navigate(); }
