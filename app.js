@@ -1,6 +1,6 @@
 const GROUPS = {
-  missbruk: { label: 'Grupp 1', title: 'Missbruks- och beroendevård' },
-  forlossning: { label: 'Grupp 2', title: 'Förlossningsvård' },
+  missbruk: { label: 'Grupp 1,4', title: 'Missbruks- och beroendevård' },
+  forlossning: { label: 'Grupp 2,5', title: 'Förlossningsvård' },
   overgang: { label: 'Grupp 3', title: 'Övergång till vuxensjukvård' }
 };
 
@@ -133,10 +133,50 @@ function replaceVisibleText(oldText, newText) {
   });
 }
 
+function addOptionalModellingSteps() {
+  const prompts = {
+    missbruk: 'Skissa den statistiska modellen. Vad är ert utfall (Y), vad är den viktigaste exponeringen eller tidsvariabeln (X), vilken tidsenhet använder ni och vilka bakgrundsfaktorer eller fixa effekter skulle ni vilja ta hänsyn till? Vad skulle modellens viktigaste koefficient betyda?',
+    forlossning: 'Skissa den statistiska modellen. Vad är Y och X, på vilken nivå skattas modellen (förlossning, klinik × timme/pass eller annan nivå), och vilka klinik- och tidsfaktorer behöver hanteras? Fundera också på om sambandet mellan belastning och utfall kan vara icke-linjärt.',
+    overgang: 'Skissa den statistiska modellen. Är utfallet exempelvis tid till första vuxenvårdskontakt, sannolikhet för ett vårdglapp eller ett hälsoutfall? Vilken tidsaxel använder ni och vilka patient-, diagnos-, region- eller kohortfaktorer behöver modellen ta hänsyn till?'
+  };
+
+  Object.entries(prompts).forEach(([key, prompt]) => {
+    const steps = document.querySelector(`#${key} .steps`);
+    if (!steps || steps.querySelector('.model-step')) return;
+    const li = document.createElement('li');
+    li.className = 'step model-step';
+    li.innerHTML = `<span class="stepnum">Om ni har tid · Steg 7</span><h3>Modellering</h3><p class="prompt">${prompt}</p><div class="emphasis"><strong>Ni behöver inte räkna.</strong> Målet är att översätta designen till en modell: vad förklaras, av vad, på vilken nivå och med vilka antaganden?</div>`;
+    steps.appendChild(li);
+  });
+
+  const framework = document.querySelector('#landing .framework-grid');
+  if (framework && !framework.querySelector('.model-framework-step')) {
+    const div = document.createElement('div');
+    div.className = 'framework-step model-framework-step';
+    div.innerHTML = '<span class="num">Om ni har tid · Steg 7</span><h3>Modellering</h3><p>Översätt designen till en statistisk modell: vad är Y, vad är X, vilken analysnivå och vilka kontroller eller fixa effekter behövs?</p>';
+    framework.appendChild(div);
+  }
+}
+
+function updateFiveGroupLabels() {
+  replaceVisibleText('Grupp 1', 'Grupp 1,4');
+  replaceVisibleText('Grupp 2', 'Grupp 2,5');
+  replaceVisibleText('Samma sex steg i alla tre grupper', 'Sex gemensamma steg i alla fem grupper');
+  replaceVisibleText('Tre presentationer à 3 minuter', 'Fem presentationer à 3 minuter');
+
+  const commonMap = document.querySelector('#landing .framework-grid')?.previousElementSibling;
+  if (commonMap && commonMap.classList.contains('claim-note') && !commonMap.textContent.includes('Bonus')) {
+    commonMap.innerHTML = '<strong>Kartan är alltid densamma:</strong> Vilka? → När? → Vad mäts? → Vilka data? → Jämfört med vad? → Vad missas? <strong>Bonus om ni har tid:</strong> hur skulle ni modellera analysen?';
+  }
+}
+
 function addWorkshopEnhancements() {
   // Den tidigare "Gemensam princip" konkurrerade visuellt med själva arbetsgången.
   const principle = document.querySelector('#landing .principle');
   if (principle) principle.hidden = true;
+
+  updateFiveGroupLabels();
+  addOptionalModellingSteps();
 
   // Bakgrund och rapport ska möta deltagaren innan huvudfrågan.
   ['missbruk', 'forlossning', 'overgang'].forEach(key => {
@@ -202,6 +242,8 @@ function addWorkshopEnhancements() {
       .answer-input:focus{outline:3px solid var(--focus);outline-offset:1px;border-color:transparent}
       .background[open]{background:#f8fafb;border-left:4px solid #aebbc1}
       .background[open] summary{border-bottom:1px solid var(--line)}
+      .model-step,.model-framework-step{background:#f7f4fb!important;border-style:dashed!important;border-color:#baa8d6!important}
+      .model-step .stepnum,.model-framework-step .num{color:#7354a5!important}
       @media print{.answer-input{border:1px solid #777;min-height:68px;overflow:visible;white-space:pre-wrap}}
     `;
     document.head.appendChild(style);
