@@ -135,9 +135,9 @@ function replaceVisibleText(oldText, newText) {
 
 function addOptionalModellingSteps() {
   const prompts = {
-    missbruk: 'Skissa den statistiska modellen. Vad är ert utfall (Y), vad är den viktigaste exponeringen eller tidsvariabeln (X), vilken tidsenhet använder ni och vilka bakgrundsfaktorer eller fixa effekter skulle ni vilja ta hänsyn till? Vad skulle modellens viktigaste koefficient betyda?',
-    forlossning: 'Skissa den statistiska modellen. Vad är Y och X, på vilken nivå skattas modellen (förlossning, klinik × timme/pass eller annan nivå), och vilka klinik- och tidsfaktorer behöver hanteras? Fundera också på om sambandet mellan belastning och utfall kan vara icke-linjärt.',
-    overgang: 'Skissa den statistiska modellen. Är utfallet exempelvis tid till första vuxenvårdskontakt, sannolikhet för ett vårdglapp eller ett hälsoutfall? Vilken tidsaxel använder ni och vilka patient-, diagnos-, region- eller kohortfaktorer behöver modellen ta hänsyn till?'
+    missbruk: `Välj en konkret modell/design och motivera varför den passar er fråga. Exempel: <strong>individ-fixed effects eller event study</strong> för utveckling inom individ över tid; <strong>difference-in-differences (DiD)</strong> om en reform införs vid olika tidpunkter eller bara omfattar vissa grupper/regioner; <strong>interrupted time series (ITS)</strong> om en tydlig reform gäller alla från ett bestämt datum; <strong>RDD</strong> endast om en faktisk tröskel skapar ett diskontinuerligt hopp i exponeringen. Vad är Y, X och vilket antagande måste hålla?`,
+    forlossning: `Välj en konkret modell/design. För ett samband mellan belastning och utfall kan ni exempelvis använda <strong>klinik-fixed effects + tids-fixed effects</strong> på klinik × timme/pass eller individnivå. Om en bemanningsreform införs olika i regioner/kliniker: överväg <strong>DiD/event study</strong>. Om en tydlig regel eller tröskel avgör bemanning: överväg <strong>RDD</strong>. Säg också varför schemalagd bemanning kan vara endogen och vad modellen därför inte automatiskt identifierar.`,
+    overgang: `Välj en konkret modell/design. För utvecklingen runt övergången kan ni använda en <strong>event study</strong> runt den observerade övergången, gärna med individ- och kalenderårs-fixed effects. Om ett strukturerat övergångsprogram införs i vissa regioner eller vid olika tidpunkter: överväg <strong>DiD/event study</strong>. Om en strikt åldersgräns faktiskt bestämmer vilken vårdform patienten får: diskutera om <strong>RDD</strong> runt gränsen är rimlig. Vad är Y, X och vilket identifieringsantagande krävs?`
   };
 
   Object.entries(prompts).forEach(([key, prompt]) => {
@@ -145,7 +145,7 @@ function addOptionalModellingSteps() {
     if (!steps || steps.querySelector('.model-step')) return;
     const li = document.createElement('li');
     li.className = 'step model-step';
-    li.innerHTML = `<span class="stepnum">Om ni har tid · Steg 7</span><h3>Modellering</h3><p class="prompt">${prompt}</p><div class="emphasis"><strong>Ni behöver inte räkna.</strong> Målet är att översätta designen till en modell: vad förklaras, av vad, på vilken nivå och med vilka antaganden?</div>`;
+    li.innerHTML = `<span class="stepnum">Om ni har tid · Steg 7</span><h3>Modellering</h3><p class="prompt">${prompt}</p><div class="emphasis"><strong>Ni behöver inte räkna.</strong> Välj modell/design, skriv vad som är Y och X och nämn det viktigaste antagandet för tolkningen.</div>`;
     steps.appendChild(li);
   });
 
@@ -153,9 +153,18 @@ function addOptionalModellingSteps() {
   if (framework && !framework.querySelector('.model-framework-step')) {
     const div = document.createElement('div');
     div.className = 'framework-step model-framework-step';
-    div.innerHTML = '<span class="num">Om ni har tid · Steg 7</span><h3>Modellering</h3><p>Översätt designen till en statistisk modell: vad är Y, vad är X, vilken analysnivå och vilka kontroller eller fixa effekter behövs?</p>';
+    div.innerHTML = '<span class="num">Om ni har tid · Steg 7</span><h3>Modellering</h3><p>Välj en konkret design/modell: t.ex. fixed effects, event study, difference-in-differences, RDD eller interrupted time series. Ange Y, X och det viktigaste antagandet.</p>';
     framework.appendChild(div);
   }
+}
+
+function addExampleModellingStep() {
+  const grid = document.querySelector('#example .six-grid');
+  if (!grid || grid.querySelector('.example-model-step')) return;
+  const div = document.createElement('div');
+  div.className = 'example-model-step';
+  div.innerHTML = `<b>7. Modellering (om ni har tid)</b><span><strong>Deskriptivt alternativ:</strong> en event study runt den första observerbara hjärtinfarkten med indikatorer för tid relativt infarkten samt individ- och kalenderårs-fixed effects. Den visar hur sysselsättning/inkomst förändras runt händelsen men identifierar inte automatiskt en kausal effekt eftersom tidpunkten för infarkten inte är slumpmässig. <strong>Kausalt alternativ:</strong> om en rehabiliteringsreform införs i vissa regioner men inte andra vid en bestämd tidpunkt kan en DiD/event-study-design vara rimlig. Finns i stället en strikt behörighetsgräns för en insats kan RDD övervägas.</span>`;
+  grid.appendChild(div);
 }
 
 function updateFiveGroupLabels() {
@@ -174,7 +183,7 @@ function updateFiveGroupLabels() {
 
   const commonMap = document.querySelector('#landing .framework-grid')?.previousElementSibling;
   if (commonMap && commonMap.classList.contains('claim-note') && !commonMap.textContent.includes('Bonus')) {
-    commonMap.innerHTML = '<strong>Kartan är alltid densamma:</strong> Vilka? → När? → Vad mäts? → Vilka data? → Jämfört med vad? → Vad missas? <strong>Bonus om ni har tid:</strong> hur skulle ni modellera analysen?';
+    commonMap.innerHTML = '<strong>Kartan är alltid densamma:</strong> Vilka? → När? → Vad mäts? → Vilka data? → Jämfört med vad? → Vad missas? <strong>Bonus om ni har tid:</strong> välj en konkret modell/design, till exempel FE, event study, DiD, RDD eller ITS.';
   }
 }
 
@@ -185,6 +194,7 @@ function addWorkshopEnhancements() {
 
   updateFiveGroupLabels();
   addOptionalModellingSteps();
+  addExampleModellingStep();
 
   // Bakgrund och rapport ska möta deltagaren innan huvudfrågan.
   ['missbruk', 'forlossning', 'overgang'].forEach(key => {
@@ -250,8 +260,10 @@ function addWorkshopEnhancements() {
       .answer-input:focus{outline:3px solid var(--focus);outline-offset:1px;border-color:transparent}
       .background[open]{background:#f8fafb;border-left:4px solid #aebbc1}
       .background[open] summary{border-bottom:1px solid var(--line)}
-      .model-step,.model-framework-step{background:#f7f4fb!important;border-style:dashed!important;border-color:#baa8d6!important}
+      .model-step,.model-framework-step,.example-model-step{background:#f7f4fb!important;border-style:dashed!important;border-color:#baa8d6!important}
       .model-step .stepnum,.model-framework-step .num{color:#7354a5!important}
+      .example-model-step{grid-column:1/-1}
+      .example-model-step b{display:block;margin-bottom:5px;color:#5e4389}
       @media print{.answer-input{border:1px solid #777;min-height:68px;overflow:visible;white-space:pre-wrap}}
     `;
     document.head.appendChild(style);
