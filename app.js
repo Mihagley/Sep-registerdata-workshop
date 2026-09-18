@@ -164,6 +164,14 @@ function updateFiveGroupLabels() {
   replaceVisibleText('Samma sex steg i alla tre grupper', 'Sex gemensamma steg i alla fem grupper');
   replaceVisibleText('Tre presentationer à 3 minuter', 'Fem presentationer à 3 minuter');
 
+  // Fem grupper kräver 15 minuter för redovisningar.
+  replaceVisibleText('5–30 min', '5–25 min');
+  replaceVisibleText('30–36 min', '25–30 min');
+  replaceVisibleText('36–45 min', '30–45 min');
+  replaceVisibleText('Efter 30 min', 'Efter 25 min');
+  replaceVisibleText('Efter 36 min', 'Efter 30 min');
+  replaceVisibleText('30-minutersstoppet', '25-minutersstoppet');
+
   const commonMap = document.querySelector('#landing .framework-grid')?.previousElementSibling;
   if (commonMap && commonMap.classList.contains('claim-note') && !commonMap.textContent.includes('Bonus')) {
     commonMap.innerHTML = '<strong>Kartan är alltid densamma:</strong> Vilka? → När? → Vad mäts? → Vilka data? → Jämfört med vad? → Vad missas? <strong>Bonus om ni har tid:</strong> hur skulle ni modellera analysen?';
