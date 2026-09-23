@@ -188,6 +188,8 @@ function updateFiveGroupLabels() {
 }
 
 function addWorkshopEnhancements() {
+  // Workshopledarsidan finns kvar via direktlänken ?ledare=1 men exponeras inte i deltagargränssnittet.
+  document.querySelectorAll('.facilitator-link').forEach(link => { link.hidden = true; });
   // Den tidigare "Gemensam princip" konkurrerade visuellt med själva arbetsgången.
   const principle = document.querySelector('#landing .principle');
   if (principle) principle.hidden = true;
@@ -301,7 +303,7 @@ function render() {
   document.title = title;
 
   const topFacilitatorLink = document.querySelector('.topbar .facilitator-link');
-  if (topFacilitatorLink) topFacilitatorLink.hidden = activeId !== 'landing';
+  if (topFacilitatorLink) topFacilitatorLink.hidden = true;
 
   if (activeId === 'reference') {
     setReferenceFilter(reference || 'all');
