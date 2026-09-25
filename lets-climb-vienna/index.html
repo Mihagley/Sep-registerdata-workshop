@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+<title>Let's Climb: Vienna Days</title>
+<style>
+  :root{--ink:#2c2633;--cream:#fff7dc;--shadow:#15121b;--panel:#f6d58d;--panel2:#d98f62}
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;overflow:hidden;background:#191628;color:var(--ink);font-family:"Courier New",monospace}
+  body{display:grid;place-items:center}
+  #wrap{position:relative;width:100vw;height:100vh;background:#111;overflow:hidden}
+  canvas{width:100%;height:100%;display:block;image-rendering:pixelated;image-rendering:crisp-edges}
+  #titleCard{position:absolute;inset:0;display:grid;place-items:center;background:linear-gradient(#80b7cf 0 48%,#779f60 48% 100%);z-index:5}
+  .card{width:min(680px,90vw);padding:24px;background:#fff1c8;border:6px solid #513b3b;box-shadow:0 8px 0 #2d252e;text-align:center}
+  h1{font-size:clamp(27px,6vw,54px);margin:0 0 6px;text-shadow:3px 3px #e4a75e;letter-spacing:-2px}
+  .sub{font-size:clamp(12px,2.5vw,18px);line-height:1.45;margin:8px auto 16px;max-width:560px}
+  button{font:inherit;background:#f4c36f;border:4px solid #513b3b;padding:10px 16px;box-shadow:0 4px 0 #513b3b;cursor:pointer;color:#2c2633;font-weight:bold}
+  button:active{transform:translateY(3px);box-shadow:0 1px 0 #513b3b}
+  #help{margin-top:14px;font-size:12px;line-height:1.5}
+  #touch{display:none;position:absolute;inset:0;pointer-events:none;z-index:4}
+  #dpad{position:absolute;left:18px;bottom:20px;width:150px;height:150px;pointer-events:auto}
+  .d{position:absolute;width:52px;height:52px;opacity:.72;border-radius:8px;padding:0;font-size:22px;touch-action:none}
+  #up{left:49px;top:0} #down{left:49px;bottom:0} #left{left:0;top:49px} #right{right:0;top:49px}
+  #interact{position:absolute;right:22px;bottom:38px;width:84px;height:84px;border-radius:50%;pointer-events:auto;opacity:.8;font-size:24px;touch-action:none}
+  #soundToggle{position:absolute;right:12px;top:12px;z-index:4;display:none;padding:6px 8px;border-width:3px;font-size:12px}
+  @media (pointer:coarse),(max-width:780px){#touch{display:block}#soundToggle{display:block}}
+</style>
+</head>
+<body>
+<div id="wrap">
+<canvas id="game"></canvas>
+<div id="titleCard">
+  <div class="card">
+    <h1>LET'S CLIMB:<br>VIENNA DAYS</h1>
+    <div class="sub">A cozy pixel social adventure built from the Vienna climbing group chat. Explore familiar places, find the whole crew, pet Mr Custard, and somehow get everyone to the same plan at the same time.</div>
+    <button id="startBtn">START WEDNESDAY</button>
+    <div id="help">Move: WASD / arrow keys · Talk / interact: E or Space<br>On mobile, use the on-screen controls.</div>
+  </div>
+</div>
+<button id="soundToggle">SFX: ON</button>
+<div id="touch">
+  <div id="dpad">
+    <button class="d" id="up">▲</button><button class="d" id="left">◀</button><button class="d" id="right">▶</button><button class="d" id="down">▼</button>
+  </div>
+  <button id="interact">E</button>
+</div>
+</div>
+<script>
+(()=>{
+'use strict';
+const cvs=document.getElementById('game'), ctx=cvs.getContext('2d'); ctx.imageSmoothingEnabled=false;
+let W=960,H=540,DPR=1;
+function resize(){DPR=Math.min(2,window.devicePixelRatio||1);W=innerWidth;H=innerHeight;cvs.width=Math.floor(W*DPR);cvs.height=Math.floor(H*DPR);ctx.setTransform(DPR,0,0,DPR,0,0);ctx.imageSmoothingEnabled=false;}
+addEventListener('resize',resize);resize();
+const TILE=32, WORLD={w:2300,h:1500};
+const keys={}; let started=false, dialog=null, activeNpc=null, toast='',toastT=0, soundOn=true, now=0;
+let talked=new Set(), visited=new Set(), petCat=false, questComplete=false;
+const player={x:480,y:760,w:20,h:26,speed:190,dir:'down',step:0};
+const COLORS={grass:'#79a85b',grass2:'#6e9a52',path:'#d6b47b',water:'#65a4bd',deep:'#477f9a',road:'#7c756d',roof:'#b65c53',wall:'#e9d3aa',tree:'#3c6d43',dark:'#2d4d38',white:'#fff4db',ink:'#2d2630'};
+
+const areas=[
+ {name:'Boulderbar Hbf',x:1030,y:650,w:350,h:260,type:'boulder',hint:'The weekly gravitational center.'},
+ {name:'Belvedere',x:1520,y:650,w:360,h:260,type:'palace',hint:'Art, queues, and “top half?” logistics.'},
+ {name:'Prater',x:1780,y:180,w:360,h:300,type:'park',hint:'Big wheel, long walks, questionable shortcuts.'},
+ {name:'Donaukanal',x:930,y:180,w:650,h:250,type:'canal',hint:'Drinks, bikes and summer plans.'},
+ {name:'Karmelitermarkt',x:530,y:280,w:320,h:260,type:'market',hint:'Luca territory. Wine may appear.'},
+ {name:'Alte Donau',x:1780,y:1030,w:390,h:300,type:'lake',hint:'Swimming, sun, and optimistic scheduling.'},
+ {name:'Schönbrunn',x:80,y:920,w:420,h:330,type:'garden',hint:'Markets, gardens and group day trips.'},
+ {name:'MuseumsQuartier',x:90,y:250,w:350,h:300,type:'museum',hint:'Culture before dinner, probably.'},
+ {name:'Naschmarkt',x:580,y:1040,w:390,h:240,type:'market2',hint:'Food decisions become serious here.'},
+ {name:'Kahlenberg',x:1510,y:1110,w:330,h:250,type:'hill',hint:'Vineyards and the illusion of a short hike.'},
+ {name:'Meidling Moto',x:1030,y:1080,w:310,h:230,type:'moto',hint:'A mysterious motorcycle side quest.'},
+ {name:'Freyung',x:510,y:20,w:330,h:180,type:'winter',hint:'Punsch stalls and winter plans.'}
+];
+
+const personality={
+ 'Marcus':['I have a plan. It may change three times before dinner.','17:45? Perfect. I will arrive at 17:52.','We need to optimize the fish-to-rice ratio.','Bouldering tomorrow? I am starting the poll now.'],
+ 'Luca':['Welcome! Same place, same chaos?','I can host. I have wine, a couple of beers, and control of the music.','A Wednesday without climbing feels structurally incorrect.','I am 90% logistics and 10% pizza.'],
+ 'Adrian':['I may be on a business trip, but I will reappear with another friend.','Train hiccup. ETA: soon-ish.','Hauptbahnhof works for me. Efficient and climbable.'],
+ 'Andrew':['How many people are we exactly? I can reserve a table.','Schönbrunn tomorrow afternoon?','I have converted this vague idea into a schedule.'],
+ 'Luq':['Count me in.','Vacation is temporary. Boulder problems are eternal.','Are we always climbing at Hbf? Not complaining.'],
+ 'Laura':['I have a hike, a trip, a food plan, and possibly a cat-sitting problem.','Dinner after climbing? Obviously.','Mr Custard has not approved this itinerary yet.','There is always room for one more adventure.'],
+ 'Fionn':['Welcome to the group!','Where is everyone? I am at the meeting point.','This plan needs more people and maybe a party afterwards.'],
+ 'Tijl':['Thursday works. Karaoke does not.','I will join if the timing survives contact with reality.','Sushi after climbing sounds efficient.'],
+ 'Carmen':['I am in. Also: will the cat be there?','This is either a great plan or a very Vienna plan.','Andrew has the schedule; I brought enthusiasm.'],
+ 'Maud':['Important question: is there dinner?','My official class is Non-Boulderer. My unofficial class is Restaurant Booker.','I can drink wine on the balcony with the cat.'],
+ 'Nadine':['Dinner and drinks sounds great.','I can bring snacks. This solves at least one problem.','I support plans with food and music.'],
+ 'Sandy':['I have reviewed the situation and have dry commentary.','Motorcycles? Now you have my attention.','Ask Laura about fish-to-rice ratios. She is basically a large cat.'],
+ 'Theresa':['Mainly here for the dinner part.','A beer garden with a nice outside area scores highly.','I may arrive later, but the table should include us.'],
+ 'Salvador':['I am coming. Please confirm which gym.','New Year unlocked the climbing-group expansion pack.','If I am not here, check the other Boulderbar.'],
+ 'Julian':['Academic cameo unlocked. I brought a calendar conflict.','I can climb after the seminar universe releases me.'],
+ 'Fiona':['PhD energy: present, slightly deadline-shaped.','I support the plan in principle and with caveats.'],
+ 'Giorgio':['Luca recruited me from work. I suspect this is how it starts.','I am still learning the group rule: every climb becomes dinner.'],
+ 'Barbara':['I was at Schottenring. You were apparently somewhere else.','Meetups and precise locations are natural enemies.']
+};
+const palette=['#e07162','#5b80a8','#cf9c55','#8a64a9','#4d9b86','#c55f89','#d1a14e','#6f8dc5','#b56c44','#7b9d51','#b06991','#648c9e','#c97a69','#8e78b5','#a98b55','#5e9b6c','#b96767','#7a83a6'];
+const names=Object.keys(personality);
+const homePos={
+ 'Marcus':[920,610],'Luca':[730,470],'Adrian':[1190,910],'Andrew':[240,820],'Luq':[1250,610],'Laura':[1420,440],'Fionn':[1040,520],'Tijl':[850,1040],'Carmen':[330,800],'Maud':[650,970],'Nadine':[520,900],'Sandy':[1460,390],'Theresa':[710,1110],'Salvador':[1320,1050],'Julian':[330,600],'Fiona':[410,620],'Giorgio':[780,520],'Barbara':[970,320]
+};
+const npcs=names.map((name,i)=>({name,x:homePos[name][0],y:homePos[name][1],baseX:homePos[name][0],baseY:homePos[name][1],vx:0,vy:0,t:Math.random()*3,color:palette[i%palette.length],hair:['#3a2a25','#c69d62','#1e1b1a','#7b4b2a','#d4bd8b'][i%5]}));
+const cat={name:'Mr Custard',x:700,y:350,vx:20,vy:14,t:0,color:'#c98a4d'};
+
+const signs=[
+ {x:1090,y:620,text:'BOULDERBAR HBF →'}, {x:650,y:255,text:'KARMELITERMARKT'}, {x:1820,y:1010,text:'ALTE DONAU'},
+ {x:1550,y:630,text:'BELVEDERE'}, {x:160,y:890,text:'SCHÖNBRUNN'}, {x:1040,y:155,text:'DONAU-KANAL'},
+ {x:1760,y:160,text:'PRATER'}, {x:620,y:1015,text:'NASCHMARKT'}, {x:1540,y:1080,text:'KAHLENBERG'}
+];
+
+function areaAt(x,y){return areas.find(a=>x>a.x&&x<a.x+a.w&&y>a.y&&y<a.y+a.h)}
+function rect(x,y,w,h,c){ctx.fillStyle=c;ctx.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h))}
+function pxText(t,x,y,size=16,color='#fff',align='left'){ctx.font=`bold ${size}px Courier New`;ctx.textAlign=align;ctx.textBaseline='top';ctx.fillStyle='#332839';ctx.fillText(t,x+2,y+2);ctx.fillStyle=color;ctx.fillText(t,x,y)}
+function hash(x,y){return Math.abs(Math.sin(x*12.9898+y*78.233)*43758.5453)%1}
+
+function drawWorld(camX,camY){
+ ctx.save();ctx.translate(-camX,-camY);
+ rect(0,0,WORLD.w,WORLD.h,COLORS.grass);
+ for(let y=0;y<WORLD.h;y+=32)for(let x=0;x<WORLD.w;x+=32){const h=hash(x,y); if(h>.82){rect(x+6,y+8,3,6,'#4e7e48');rect(x+11,y+12,3,5,'#4e7e48')} else if(h<.07)rect(x+20,y+17,3,3,'#e8d37e');}
+ // Roads & paths
+ rect(0,700,WORLD.w,120,COLORS.road); rect(850,0,130,WORLD.h,COLORS.road); rect(0,730,WORLD.w,8,'#a69b8e'); rect(910,0,8,WORLD.h,'#a69b8e');
+ for(let x=10;x<WORLD.w;x+=64)rect(x,756,28,4,'#d7d0c0'); for(let y=10;y<WORLD.h;y+=64)rect(913,y,4,28,'#d7d0c0');
+ // Donaukanal
+ rect(900,210,720,135,COLORS.deep); for(let x=920;x<1600;x+=38)rect(x,230+(x%76?18:36),25,4,COLORS.water);
+ // Alte Donau lake
+ rect(1760,1035,420,260,COLORS.water); for(let x=1780;x<2160;x+=50)rect(x,1080+(x%100),30,5,'#87bfd0');
+ // Area-specific landmarks
+ areas.forEach(a=>drawArea(a));
+ // scattered trees
+ const trees=[[80,80],[150,110],[230,70],[420,80],[1650,100],[1710,120],[2200,120],[2150,470],[2020,530],[65,650],[230,620],[470,1360],[350,1330],[1460,1380],[2100,1370],[2190,890],[1510,970]];
+ trees.forEach(([x,y])=>tree(x,y));
+ signs.forEach(s=>sign(s.x,s.y,s.text));
+ // cat then NPCs then player by y-order
+ const entities=[...npcs,cat,{...player,name:'YOU',isPlayer:true}].sort((a,b)=>a.y-b.y);
+ entities.forEach(e=>e.isPlayer?drawPerson(e.x,e.y,'#e6a34f','#3b2b24',true):e===cat?drawCat(e):drawPerson(e.x,e.y,e.color,e.hair,false));
+ ctx.restore();
+}
+function drawArea(a){
+ if(a.type==='boulder'){
+   rect(a.x,a.y,a.w,a.h,'#d7c7a5');rect(a.x+14,a.y+12,a.w-28,78,'#58616c');
+   const holds=['#e3645a','#e6c75b','#69a5d9','#7dc577','#b477c6'];let k=0;
+   for(let yy=a.y+28;yy<a.y+84;yy+=22)for(let xx=a.x+30;xx<a.x+a.w-25;xx+=34){rect(xx,yy,9,6,holds[k++%holds.length]);}
+   rect(a.x+35,a.y+110,a.w-70,a.h-135,'#b99f77');pxText('BOULDERBAR HBF',a.x+a.w/2,a.y+210,17,'#fff4d4','center');
+ } else if(a.type==='palace'){
+   rect(a.x+35,a.y+50,a.w-70,145,'#ead9b4');rect(a.x+75,a.y+22,a.w-150,45,'#b9a57a');
+   for(let i=0;i<6;i++){rect(a.x+55+i*48,a.y+90,22,38,'#9bb4b8');}
+   for(let i=0;i<5;i++)tree(a.x+30+i*75,a.y+220);
+   pxText('BELVEDERE',a.x+a.w/2,a.y+198,16,'#4d3b35','center');
+ } else if(a.type==='park'){
+   for(let i=0;i<10;i++)tree(a.x+25+(i%5)*70,a.y+100+Math.floor(i/5)*125);
+   // ferris wheel
+   ctx.strokeStyle='#ddd6c5';ctx.lineWidth=7;ctx.beginPath();ctx.arc(a.x+180,a.y+85,62,0,Math.PI*2);ctx.stroke();
+   ctx.lineWidth=3;for(let i=0;i<8;i++){const ang=i*Math.PI/4;ctx.beginPath();ctx.moveTo(a.x+180,a.y+85);ctx.lineTo(a.x+180+Math.cos(ang)*62,a.y+85+Math.sin(ang)*62);ctx.stroke();}
+   rect(a.x+170,a.y+145,20,70,'#70645d');pxText('PRATER',a.x+180,a.y+240,17,'#fff','center');
+ } else if(a.type==='canal'){
+   rect(a.x+20,a.y+15,210,42,'#c96f62');rect(a.x+260,a.y+340-210,240,38,'#dbb55d');
+   pxText('DONAU-KANAL',a.x+a.w/2,a.y+200,15,'#fff','center');
+ } else if(a.type==='market'||a.type==='market2'){
+   rect(a.x+25,a.y+65,a.w-50,115,'#e7d0a3');
+   for(let i=0;i<5;i++){rect(a.x+42+i*52,a.y+85,38,28,i%2?'#c95e5e':'#e5b65f');rect(a.x+49+i*52,a.y+120,24,34,'#85654b');}
+   pxText(a.name.toUpperCase(),a.x+a.w/2,a.y+195,15,'#fff4d5','center');
+ } else if(a.type==='lake'){
+   rect(a.x+24,a.y+16,140,16,'#edd28c');rect(a.x+120,a.y+38,12,65,'#8b694b');
+   pxText('ALTE DONAU',a.x+a.w/2,a.y+220,16,'#fff','center');
+ } else if(a.type==='garden'){
+   for(let i=0;i<12;i++)tree(a.x+20+(i%6)*65,a.y+180+Math.floor(i/6)*95);
+   rect(a.x+90,a.y+45,240,110,'#e3cf9f');rect(a.x+120,a.y+28,180,28,'#c2a36f');
+   pxText('SCHÖNBRUNN',a.x+a.w/2,a.y+160,16,'#5a4335','center');
+ } else if(a.type==='museum'){
+   rect(a.x+55,a.y+65,240,120,'#d8c7af');for(let i=0;i<5;i++)rect(a.x+80+i*44,a.y+105,18,80,'#796b65');
+   pxText('MUSEUMSQUARTIER',a.x+a.w/2,a.y+210,14,'#fff','center');
+ } else if(a.type==='hill'){
+   ctx.fillStyle='#567f4e';ctx.beginPath();ctx.moveTo(a.x,a.y+a.h);ctx.lineTo(a.x+140,a.y+50);ctx.lineTo(a.x+a.w,a.y+a.h);ctx.fill();
+   for(let i=0;i<5;i++)tree(a.x+30+i*60,a.y+175+i%2*35);pxText('KAHLENBERG',a.x+a.w/2,a.y+220,15,'#fff','center');
+ } else if(a.type==='moto'){
+   rect(a.x+25,a.y+55,a.w-50,120,'#9c8f83');rect(a.x+65,a.y+85,180,70,'#4c4b50');
+   ctx.strokeStyle='#e6b655';ctx.lineWidth=7;ctx.beginPath();ctx.arc(a.x+115,a.y+150,24,0,Math.PI*2);ctx.arc(a.x+215,a.y+150,24,0,Math.PI*2);ctx.stroke();
+   ctx.beginPath();ctx.moveTo(a.x+115,a.y+150);ctx.lineTo(a.x+160,a.y+112);ctx.lineTo(a.x+215,a.y+150);ctx.stroke();pxText('MEIDLING MOTO',a.x+a.w/2,a.y+190,14,'#fff','center');
+ } else if(a.type==='winter'){
+   rect(a.x+25,a.y+45,a.w-50,90,'#dcc5a3');for(let i=0;i<4;i++){rect(a.x+45+i*64,a.y+95,40,32,'#9b5c50');rect(a.x+42+i*64,a.y+82,46,15,'#e5d6c0');}
+   pxText('FREYUNG',a.x+a.w/2,a.y+145,14,'#fff','center');
+ }
+}
+function tree(x,y){rect(x+10,y+25,10,25,'#76563a');rect(x,y,30,34,COLORS.dark);rect(x+4,y-8,23,30,COLORS.tree);rect(x+10,y-13,13,16,'#4f8050')}
+function sign(x,y,t){rect(x,y,8,34,'#6d4d35');rect(x-34,y-18,78,24,'#cfaa6a');ctx.save();ctx.font='bold 8px Courier New';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#3e302b';ctx.fillText(t,x+5,y-6);ctx.restore()}
+function drawPerson(x,y,shirt,hair,isPlayer){
+ rect(x-8,y-18,16,13,'#e4ad85');rect(x-8,y-22,16,7,hair);rect(x-10,y-5,20,18,shirt);rect(x-8,y+13,7,10,'#3c4052');rect(x+2,y+13,7,10,'#3c4052');
+ rect(x-5,y-14,2,2,'#362a2a');rect(x+4,y-14,2,2,'#362a2a');
+ if(isPlayer){rect(x-14,y-30,28,4,'#f1d66d')}
+}
+function drawCat(c){
+ const x=c.x,y=c.y;rect(x-10,y-7,20,12,'#c98445');rect(x-7,y-15,14,10,'#d49a57');rect(x-8,y-18,4,5,'#b56e38');rect(x+4,y-18,4,5,'#b56e38');rect(x-5,y-11,2,2,'#33292a');rect(x+4,y-11,2,2,'#33292a');
+ ctx.fillStyle='#c98445';ctx.fillRect(x+9,y-4,12,4);ctx.fillRect(x+17,y-9,4,7);
+}
+
+function drawUI(camX,camY){
+ // top bar
+ rect(14,14,248,72,'rgba(255,244,214,.94)');ctx.strokeStyle='#5a4139';ctx.lineWidth=4;ctx.strokeRect(14,14,248,72);
+ pxText('WEDNESDAY',27,23,15,'#5b4037');pxText('17:'+(30+Math.floor(now/50)%30).toString().padStart(2,'0'),27,46,20,'#8c4f42');
+ const area=areaAt(player.x,player.y);pxText(area?area.name:'Vienna',274,20,18,'#fff3ce');
+ // quest
+ const qx=Math.max(15,W-290);rect(qx,14,275,92,'rgba(255,244,214,.94)');ctx.strokeStyle='#5a4139';ctx.strokeRect(qx,14,275,92);
+ pxText('GROUP QUEST',qx+12,24,14,'#814f45');
+ pxText(`Friends greeted: ${talked.size}/${npcs.length}`,qx+12,46,13,'#433632');
+ pxText(`Mr Custard: ${petCat?'petted ✓':'not yet'}`,qx+12,66,13,'#433632');
+ if(questComplete) pxText('PLAN ACHIEVED ★',qx+12,85,12,'#7f7031');
+ // hearts-ish
+ rect(14,94,248,28,'rgba(30,26,38,.72)');pxText(`Group energy ${Math.min(100,Math.round((talked.size/npcs.length)*85+(petCat?15:0)))}%`,26,100,12,'#fff');
+ // minimap
+ const mw=175,mh=110,mx=W-190,my=H-126;rect(mx,my,mw,mh,'rgba(35,31,43,.82)');ctx.strokeStyle='#f3ddb4';ctx.strokeRect(mx,my,mw,mh);
+ areas.forEach(a=>{ctx.fillStyle=a.type==='lake'||a.type==='canal'?'#6aa9c0':'#9baa68';ctx.fillRect(mx+a.x/WORLD.w*mw,my+a.y/WORLD.h*mh,Math.max(5,a.w/WORLD.w*mw),Math.max(4,a.h/WORLD.h*mh));});
+ rect(mx+player.x/WORLD.w*mw-2,my+player.y/WORLD.h*mh-2,5,5,'#ffe16c');
+ // toast
+ if(toastT>0){const tw=Math.min(W-40,560);rect((W-tw)/2,H-78,tw,45,'rgba(39,32,45,.9)');pxText(toast,W/2,H-66,13,'#fff3d0','center');}
+ // nearby prompt
+ const n=nearestInteractable(); if(!dialog&&n&&dist(player,n)<58){rect(W/2-115,H-130,230,34,'rgba(255,244,214,.94)');pxText(n===cat?'E · PET MR CUSTARD':`E · TALK TO ${n.name.toUpperCase()}`,W/2,H-122,11,'#46352e','center');}
+ if(dialog)drawDialog();
+}
+function wrapText(text,max){const words=text.split(' '),out=[];let l='';for(const w of words){const t=l?l+' '+w:w;if(t.length>max){out.push(l);l=w}else l=t}if(l)out.push(l);return out}
+function drawDialog(){const boxW=Math.min(760,W-30), boxH=140, x=(W-boxW)/2,y=H-boxH-18;rect(x,y,boxW,boxH,'#fff1c8');ctx.strokeStyle='#523c3d';ctx.lineWidth=5;ctx.strokeRect(x,y,boxW,boxH);pxText(dialog.name,x+18,y+16,17,'#8a5143');const ls=wrapText(dialog.text,Math.max(28,Math.floor((boxW-42)/9)));ls.slice(0,4).forEach((l,i)=>pxText(l,x+18,y+45+i*22,14,'#3d3233'));pxText('E / SPACE',x+boxW-18,y+108,11,'#876c55','right')}
+function dist(a,b){return Math.hypot(a.x-b.x,a.y-b.y)}
+function nearestInteractable(){let best=null,bd=999;for(const n of [...npcs,cat]){const d=dist(player,n);if(d<bd){bd=d;best=n}}return bd<65?best:null}
+function interact(){
+ if(dialog){dialog=null;activeNpc=null;return}
+ const n=nearestInteractable();if(!n)return;
+ if(n===cat){petCat=true;dialog={name:'Mr Custard',text:'Mrrrp. [Translation: The official start time is whenever I am fed.]'};toast='Mr Custard approves of you. Probably.';toastT=3;sfx(660,0.05);checkQuest();return}
+ const arr=personality[n.name];const text=arr[Math.floor(Math.random()*arr.length)];dialog={name:n.name,text};activeNpc=n;
+ if(!talked.has(n.name)){talked.add(n.name);toast=`${n.name} joined today's plan. ${talked.size}/${npcs.length}`;toastT=2.5;sfx(520+talked.size*8,0.04);}
+ checkQuest();
+}
+function checkQuest(){if(!questComplete&&talked.size>=10&&petCat){questComplete=true;toast='Quest complete: enough people agree there is probably climbing + dinner.';toastT=5;sfx(784,0.08);setTimeout(()=>sfx(988,0.1),100)}}
+function sfx(freq,dur){if(!soundOn)return;try{const A=window.AudioContext||window.webkitAudioContext;window._ac=window._ac||new A();const o=_ac.createOscillator(),g=_ac.createGain();o.type='square';o.frequency.value=freq;g.gain.value=.025;o.connect(g);g.connect(_ac.destination);o.start();g.gain.exponentialRampToValueAtTime(.001,_ac.currentTime+dur);o.stop(_ac.currentTime+dur)}catch(e){}}
+
+function update(dt){if(!started)return;now+=dt; if(toastT>0)toastT-=dt;
+ if(!dialog){let dx=0,dy=0;if(keys.ArrowLeft||keys.a)dx--;if(keys.ArrowRight||keys.d)dx++;if(keys.ArrowUp||keys.w)dy--;if(keys.ArrowDown||keys.s)dy++;if(dx||dy){const l=Math.hypot(dx,dy);dx/=l;dy/=l;player.x=Math.max(18,Math.min(WORLD.w-18,player.x+dx*player.speed*dt));player.y=Math.max(28,Math.min(WORLD.h-18,player.y+dy*player.speed*dt));player.step+=dt*10;if(Math.abs(dx)>Math.abs(dy))player.dir=dx>0?'right':'left';else player.dir=dy>0?'down':'up';}}
+ npcs.forEach((n,i)=>{n.t-=dt;if(n.t<=0){n.t=1.8+Math.random()*3;n.vx=(Math.random()-.5)*34;n.vy=(Math.random()-.5)*34;}n.x+=n.vx*dt;n.y+=n.vy*dt;const r=75;if(n.x<n.baseX-r||n.x>n.baseX+r)n.vx*=-1;if(n.y<n.baseY-r||n.y>n.baseY+r)n.vy*=-1;n.x=Math.max(20,Math.min(WORLD.w-20,n.x));n.y=Math.max(30,Math.min(WORLD.h-20,n.y));});
+ cat.t-=dt;if(cat.t<=0){cat.t=1+Math.random()*2.5;cat.vx=(Math.random()-.5)*55;cat.vy=(Math.random()-.5)*40;}cat.x+=cat.vx*dt;cat.y+=cat.vy*dt;if(cat.x<560||cat.x>850)cat.vx*=-1;if(cat.y<260||cat.y>540)cat.vy*=-1;
+ const a=areaAt(player.x,player.y);if(a&&!visited.has(a.name)){visited.add(a.name);toast=`Discovered: ${a.name} — ${a.hint}`;toastT=3.2;}
+}
+function render(){const camX=Math.max(0,Math.min(WORLD.w-W,player.x-W/2)),camY=Math.max(0,Math.min(WORLD.h-H,player.y-H/2));rect(0,0,W,H,'#1d1a25');drawWorld(camX,camY);drawUI(camX,camY)}
+let last=performance.now();function loop(t){const dt=Math.min(.033,(t-last)/1000);last=t;update(dt);render();requestAnimationFrame(loop)}requestAnimationFrame(loop);
+
+function setKey(k,v){keys[k]=v}
+addEventListener('keydown',e=>{const k=e.key.length===1?e.key.toLowerCase():e.key;if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' ','e','w','a','s','d'].includes(k))e.preventDefault();setKey(k,true);if((k==='e'||k===' ')&&!e.repeat)interact();});
+addEventListener('keyup',e=>setKey(e.key.length===1?e.key.toLowerCase():e.key,false));
+const mapBtns={up:'ArrowUp',down:'ArrowDown',left:'ArrowLeft',right:'ArrowRight'};Object.entries(mapBtns).forEach(([id,k])=>{const b=document.getElementById(id);['pointerdown','touchstart'].forEach(ev=>b.addEventListener(ev,e=>{e.preventDefault();setKey(k,true)}));['pointerup','pointercancel','pointerleave','touchend'].forEach(ev=>b.addEventListener(ev,e=>{e.preventDefault();setKey(k,false)}));});
+document.getElementById('interact').addEventListener('pointerdown',e=>{e.preventDefault();interact()});
+document.getElementById('startBtn').onclick=()=>{document.getElementById('titleCard').style.display='none';started=true;toast='Quest: greet the crew, explore Vienna, and find Mr Custard.';toastT=5;sfx(440,.08)};
+document.getElementById('soundToggle').onclick=()=>{soundOn=!soundOn;document.getElementById('soundToggle').textContent='SFX: '+(soundOn?'ON':'OFF')};
+})();
+</script>
+</body>
+</html>
